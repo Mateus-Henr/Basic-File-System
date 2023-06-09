@@ -3,4 +3,4 @@ project(Basic_File_System C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(Basic_File_System src/main.c src/timestamps.c src/timestamps.h)
+add_executable(Basic_File_System src/main.c src/timestamps.c src/timestamps.h src/entry_metadata.c src/entry_metadata.h)
