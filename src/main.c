@@ -1,7 +1,14 @@
 #include <stdio.h>
 
+#include "timestamps.h"
+
 int main()
 {
-    printf("Hello, World!\n");
+    Timestamps timestamps;
+
+    initializeTimestamps(&timestamps);
+
+    displayTimestamps(&timestamps);
+
     return 0;
 }
