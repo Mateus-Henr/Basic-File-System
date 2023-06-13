@@ -6,7 +6,7 @@
 
 void initializeEntryMetadata(EntryMetadata *entryMetadata,
                              size_t sizeInBytes,
-                             unsigned long ownership)
+                             long ownership)
 {
     entryMetadata->sizeInBytes = sizeInBytes;
     entryMetadata->permissions = S_IRUSR;

@@ -10,14 +10,14 @@ typedef struct EntryMetadata
 {
     size_t sizeInBytes;
     mode_t permissions;
-    unsigned long ownership;
+    long ownership;
     Timestamps timestamps;
 } EntryMetadata;
 
 
 void initializeEntryMetadata(EntryMetadata *entryMetadata,
                              size_t sizeInBytes,
-                             unsigned long ownership);
+                             long ownership);
 
 void displayEntryMetadata(EntryMetadata *entryMetadata);
 
