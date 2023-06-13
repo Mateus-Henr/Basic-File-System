@@ -1,8 +1,8 @@
 #ifndef BASIC_FILE_SYSTEM_ENTRY_CONTENT_H
 #define BASIC_FILE_SYSTEM_ENTRY_CONTENT_H
 
-#include "directory.h"
-#include "file.h"
+#include "directory/directory.h"
+#include "file/file.h"
 
 enum EntryType
 {
