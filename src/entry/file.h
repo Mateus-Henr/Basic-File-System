@@ -1,7 +1,7 @@
 #ifndef BASIC_FILE_SYSTEM_FILE_H
 #define BASIC_FILE_SYSTEM_FILE_H
 
-#include "Block.h"
+#include "block.h"
 
 #define SIZE_DIRECT_BLOCKS 12
 

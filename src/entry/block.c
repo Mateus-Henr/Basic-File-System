@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "Block.h"
+#include "block.h"
 
 
 Block *initializeBlock(char *content, long size)
