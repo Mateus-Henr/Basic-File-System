@@ -7,11 +7,12 @@
 
 #define DELIMITER "/"
 
+
 bool checkINodeCount(UFS *ufs)
 {
     if (ufs->iNodeCount + 1 == ufs->maxINodes)
     {
-        printf("ERROR: Max number of Inodes has been reached.");
+        printf(MAX_NUMBER_OF_INODES);
         return false;
     }
 
@@ -89,7 +90,6 @@ bool createEntryHierarchy(UFS *ufs, INode *parentINode, Path *entryPath, enum En
         }
         else // FILE
         {
-            // It receives NULL once we cannot create an entry inside a file.
             return false;
         }
     }

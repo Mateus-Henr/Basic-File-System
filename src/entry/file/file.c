@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include "file.h"
 
+#define FILE_CONTENT "../files/content.txt"
+
 void initializeFile(File *file, char *content, long blockSize)
 {
     /// TODO: Divide content into blocks.

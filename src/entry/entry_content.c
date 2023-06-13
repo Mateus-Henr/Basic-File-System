@@ -1,5 +1,6 @@
 #include "entry_content.h"
 
+
 void initializeEntryContent(EntryContent *entryContent, enum EntryType entryType)
 {
     if (entryType == DIRECTORY)

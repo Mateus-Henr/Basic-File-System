@@ -32,12 +32,11 @@ int main()
             }
 
             commandSwitch(&ufs, command);
+            freeCommand(command);
         }
         else
         {
             printf("ERROR: Failed to read input.");
         }
     }
-
-    return 0;
 }
