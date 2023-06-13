@@ -90,6 +90,7 @@ bool createEntryHierarchy(UFS *ufs, INode *parentINode, Path *entryPath, enum En
         }
         else // FILE
         {
+            printf(FILE_IS_NOT_DIRECTORY, entryPath->entryNames[i]);
             return false;
         }
     }
@@ -127,6 +128,12 @@ bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType)
         return false;
     }
 
+    if (foundINode->entryContent.entryType == ARCHIVE)
+    {
+        printf(FILE_IS_NOT_DIRECTORY, entryPath->entryNames[0]);
+        return false;
+    }
+
     return createEntryHierarchy(ufs, foundINode, entryPath, entryType);
 }
 
@@ -151,7 +158,10 @@ bool deleteEntry(UFS *ufs, Path *entryPath)
 
 }
 
-void displayEntryContent(UFS *ufs, Path *entryPath)
+void displayEntry(UFS *ufs, Path *entryPath)
 {
-
+    for (long i = 0; i < ufs->iNodeCount; i++)
+    {
+        displayINode(ufs->iNodes[i]);
+    }
 }

@@ -14,22 +14,20 @@ void initializeTimestamps(Timestamps *timestamps)
     timestamps->lastAccess = currentTime;
 }
 
-
 void updateLastModification(Timestamps *timestamps)
 {
     time(&timestamps->lastModification);
 }
-
 
 void updateLastAccess(Timestamps *timestamps)
 {
     time(&timestamps->lastAccess);
 }
 
-
 void displayTimestamps(Timestamps *timestamps)
 {
-    printf("Creation: %s", ctime(&(timestamps->creation)));
-    printf("Last Modification: %s", ctime(&(timestamps->lastModification)));
-    printf("Last Access: %s", ctime(&(timestamps->lastAccess)));
+    printf("\nCreation: %sLast Modification: %sLast Access: %s",
+           ctime(&(timestamps->creation)),
+           ctime(&(timestamps->lastModification)),
+           ctime(&(timestamps->lastAccess)));
 }

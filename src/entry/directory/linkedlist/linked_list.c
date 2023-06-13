@@ -93,3 +93,17 @@ bool removeNode(LinkedList *linkedList, char *entryName)
 
     return false;
 }
+
+void displayLinkedList(LinkedList *linkedList)
+{
+    Node *currNode = linkedList->head;
+
+    while (currNode)
+    {
+        printf("\n\n-> %ld\n->%s", currNode->iNodeId, currNode->entryName);
+
+        currNode = currNode->nextNode;
+    }
+
+    printf("\n");
+}

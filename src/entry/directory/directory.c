@@ -19,3 +19,8 @@ bool removeEntry(Directory *directory, char *entryName)
 {
     return removeNode(&directory->entries, entryName);
 }
+
+void displayDirectory(Directory *directory)
+{
+    displayLinkedList(&directory->entries);
+}

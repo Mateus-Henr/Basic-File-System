@@ -25,4 +25,6 @@ long getINodeNumber(LinkedList *linkedList, char *entryName);
 
 bool removeNode(LinkedList *linkedList, char *entryName);
 
+void displayLinkedList(LinkedList *linkedList);
+
 #endif //BASIC_FILE_SYSTEM_LINKED_LIST_H

@@ -31,6 +31,13 @@ INode *initializeINode(long id, char *entryName, enum EntryType entryType)
     return iNode;
 }
 
+void displayINode(INode *iNode)
+{
+    printf("\nID: %ld\nName: %s", iNode->id, iNode->entryName);
+    displayEntryMetadata(&iNode->entryMetadata);
+    displayEntryContent(&iNode->entryContent);
+}
+
 void freeINode(INode *iNode)
 {
     if (iNode)

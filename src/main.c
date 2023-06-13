@@ -20,6 +20,8 @@ int main()
 
         char commandString[UCHAR_MAX];
 
+        /// TODO: Issue - Press Enter without typing anything.
+        ///       Fix - Create a pre-checking for the command string.
         if (fgets(commandString, sizeof(commandString), stdin) != NULL)
         {
             // Remove the trailing newline character, if present

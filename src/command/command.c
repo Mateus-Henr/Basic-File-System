@@ -10,6 +10,7 @@
 #define CAT "cat"
 #define LS "ls"
 
+
 bool isThereAnyOptions(char *commandLine)
 {
     for (long i = 0; i < strlen(commandLine); i++)
@@ -90,11 +91,11 @@ void commandSwitch(UFS *ufs, Command *command)
     }
     else if (strcmp(command->command, CAT) == 0)
     {
-        displayEntryContent(ufs, command->path);
+        displayEntry(ufs, command->path);
     }
     else if (strcmp(command->command, LS) == 0)
     {
-        displayEntryContent(ufs, command->path);
+        displayEntry(ufs, command->path);
     }
     else
     {

@@ -18,5 +18,7 @@
 #define INVALID_ENTRY_PATH "%s\nERROR: Invalid entry path '%s'.\033[0m\n", RED
 #define INODE_NOT_FOUND "%s\nERROR: Couldn't find INode for '%s'.\033[0m\n", RED
 #define MAX_NUMBER_OF_INODES "%s\nERROR: Max number of Inodes has been reached.\033[0m\n", RED
+#define ENTRY_CREATION_ERROR "%s\nERROR: Couldn't create entry.\033[0m\n", RED
+#define FILE_IS_NOT_DIRECTORY "%s\nERROR: Couldn't create entry, '%s' is not a directory.\033[0m\n", RED
 
 #endif //BASIC_FILE_SYSTEM_ERROR_H

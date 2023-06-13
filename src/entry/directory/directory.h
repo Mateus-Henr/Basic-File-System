@@ -17,4 +17,6 @@ long findINodeId(Directory *directory, char *entryName);
 
 bool removeEntry(Directory *directory, char *entryName);
 
+void displayDirectory(Directory *directory);
+
 #endif //BASIC_FILE_SYSTEM_DIRECTORY_H

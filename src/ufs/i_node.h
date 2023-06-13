@@ -14,6 +14,8 @@ typedef struct INode
 
 INode *initializeINode(long id, char *entryName, enum EntryType entryType);
 
+void displayINode(INode *iNode);
+
 void freeINode(INode *iNode);
 
 #endif //BASIC_FILE_SYSTEM_I_NODE_H
