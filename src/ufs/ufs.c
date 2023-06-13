@@ -60,16 +60,14 @@ INode *findINode(UFS *ufs, char *entryName)
     return NULL;
 }
 
-bool createSingleNode(UFS *ufs, char *entryName, enum EntryType entryType)
+INode *createSingleNode(UFS *ufs, char *entryName, enum EntryType entryType)
 {
-    ufs->iNodes[ufs->iNodeCount] = initializeINode(ufs->iNodeCount, entryName, entryType);
-    ufs->iNodeCount++;
-    return true;
+    return ufs->iNodes[ufs->iNodeCount++] = initializeINode(ufs->iNodeCount, entryName, entryType);
 }
 
 bool createEntryHierarchy(UFS *ufs, INode *parentINode, Path *entryPath, enum EntryType entryType)
 {
-    for (long i = 1; i < entryPath->size; i++)
+    for (long i = 1; i < entryPath->size - 1; i++)
     {
         if (!parentINode)
         {
@@ -89,13 +87,21 @@ bool createEntryHierarchy(UFS *ufs, INode *parentINode, Path *entryPath, enum En
 
             parentINode = ufs->iNodes[iNodeId];
         }
-        else
+        else // FILE
         {
-            parentINode = NULL;
+            // It receives NULL once we cannot create an entry inside a file.
+            return false;
         }
     }
 
-    return createSingleNode(ufs, entryPath->entryNames[entryPath->size - 1], entryType);
+    INode *createdINode = createSingleNode(ufs, entryPath->entryNames[entryPath->size - 1], entryType);
+
+    if (entryType == DIRECTORY)
+    {
+        return addEntry(&parentINode->entryContent.directory, createdINode->id, createdINode->entryName);
+    }
+
+    return true;
 }
 
 bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType)
@@ -110,9 +116,11 @@ bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType)
 
     if (!foundINode)
     {
+        // If only the root path is specified, such as "mkdir /root".
         if (entryPath->size == 1)
         {
-            return createSingleNode(ufs, entryPath->entryNames[0], entryType);
+            createSingleNode(ufs, entryPath->entryNames[0], entryType);
+            return true;
         }
 
         printf(INODE_NOT_FOUND, entryPath->entryNames[0]);

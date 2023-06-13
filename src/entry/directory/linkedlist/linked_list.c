@@ -12,7 +12,7 @@ void initializeLinkedList(LinkedList *linkedList)
     linkedList->nodeCount = 0;
 }
 
-bool insertNode(LinkedList linkedList, long iNodeId, char *entryName)
+bool insertNode(LinkedList *linkedList, long iNodeId, char *entryName)
 {
     Node *newNode = (Node *) malloc(sizeof(Node *));
 
@@ -26,24 +26,24 @@ bool insertNode(LinkedList linkedList, long iNodeId, char *entryName)
     newNode->entryName = entryName;
     newNode->nextNode = NULL;
 
-    if (!linkedList.head)
+    if (!linkedList->head)
     {
-        linkedList.head = linkedList.tail = newNode;
+        linkedList->head = linkedList->tail = newNode;
     }
     else
     {
-        linkedList.tail->nextNode = newNode;
-        linkedList.tail = newNode;
+        linkedList->tail->nextNode = newNode;
+        linkedList->tail = newNode;
     }
 
-    linkedList.nodeCount++;
+    linkedList->nodeCount++;
 
     return true;
 }
 
-long getINodeNumber(LinkedList linkedList, char *entryName)
+long getINodeNumber(LinkedList *linkedList, char *entryName)
 {
-    Node *currNode = linkedList.head;
+    Node *currNode = linkedList->head;
 
     while (currNode)
     {
@@ -58,9 +58,9 @@ long getINodeNumber(LinkedList linkedList, char *entryName)
     return -1;
 }
 
-bool removeNode(LinkedList linkedList, char *entryName)
+bool removeNode(LinkedList *linkedList, char *entryName)
 {
-    Node *currNode = linkedList.head;
+    Node *currNode = linkedList->head;
     Node *prevNode = NULL;
 
     if (!currNode)
@@ -74,7 +74,7 @@ bool removeNode(LinkedList linkedList, char *entryName)
         {
             if (!prevNode)
             {
-                linkedList.head = linkedList.head->nextNode;
+                linkedList->head = linkedList->head->nextNode;
             }
             else
             {
@@ -82,7 +82,7 @@ bool removeNode(LinkedList linkedList, char *entryName)
             }
 
             free(currNode);
-            linkedList.nodeCount--;
+            linkedList->nodeCount--;
 
             return true;
         }

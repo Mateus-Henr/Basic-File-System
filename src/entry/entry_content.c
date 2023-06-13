@@ -10,5 +10,6 @@ void initializeEntryContent(EntryContent *entryContent, enum EntryType entryType
     else
     {
         entryContent->entryType = ARCHIVE;
+        initializeFile(&entryContent->file, "CONTENT", 20);
     }
 }

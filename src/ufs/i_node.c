@@ -17,7 +17,7 @@ INode *initializeINode(long id, char *entryName, enum EntryType entryType)
     }
 
     iNode->id = id;
-    iNode->entryName = (char *) malloc(strlen(entryName) + 1);
+    iNode->entryName = strdup(entryName);
     initializeEntryMetadata(&iNode->entryMetadata, 10, 1);
     initializeEntryContent(&iNode->entryContent, entryType);
 
