@@ -6,26 +6,18 @@
 #include "timestamps.h"
 
 
-enum EntryType
-{
-    DIRECTORY, FILE
-};
-
-
 typedef struct EntryMetadata
 {
     size_t sizeInBytes;
     mode_t permissions;
     unsigned long ownership;
-    enum EntryType entryType;
     Timestamps timestamps;
 } EntryMetadata;
 
 
 void initializeEntryMetadata(EntryMetadata *entryMetadata,
                              size_t sizeInBytes,
-                             unsigned long ownership,
-                             enum EntryType entryType);
+                             unsigned long ownership);
 
 
 #endif //BASIC_FILE_SYSTEM_ENTRY_METADATA_H

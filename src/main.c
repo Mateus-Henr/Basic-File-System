@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "timestamps.h"
+#include "entry/timestamps.h"
 
 int main()
 {
