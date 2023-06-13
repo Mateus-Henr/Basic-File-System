@@ -14,7 +14,8 @@
 #include "colour.h"
 
 #define INVALID_COMMAND "%s\nERROR: Invalid command '%s'.\033[0m\n", RED
-#define ALLOCATION_ERROR "%s\nERROR: Couldn't allocate memory correctly for %s.\033[0m\n", RED
-#define INVALID_ENTRY_PATH "%s\nERROR: Invalid entry path %s.\033[0m\n", RED
+#define ALLOCATION_ERROR "%s\nERROR: Couldn't allocate memory correctly for '%s'.\033[0m\n", RED
+#define INVALID_ENTRY_PATH "%s\nERROR: Invalid entry path '%s'.\033[0m\n", RED
+#define INODE_NOT_FOUND "%s\nERROR: Couldn't find INode for '%s'.\033[0m\n", RED
 
 #endif //BASIC_FILE_SYSTEM_ERROR_H

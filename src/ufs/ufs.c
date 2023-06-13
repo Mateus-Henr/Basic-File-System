@@ -73,7 +73,7 @@ bool createEntryHierarchy(UFS *ufs, INode *parentINode, Path *entryPath, enum En
     {
         if (!parentINode)
         {
-            printf("ERROR: Couldn't find INode for '%s'.", entryPath->entryNames[i]);
+            printf(INODE_NOT_FOUND, entryPath->entryNames[i]);
             return false;
         }
 
@@ -83,7 +83,7 @@ bool createEntryHierarchy(UFS *ufs, INode *parentINode, Path *entryPath, enum En
 
             if (iNodeId == -1)
             {
-                printf("ERROR: Couldn't find INode for '%s'.", entryPath->entryNames[i]);
+                printf(INODE_NOT_FOUND, entryPath->entryNames[i]);
                 return false;
             }
 
@@ -115,7 +115,7 @@ bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType)
             return createSingleNode(ufs, entryPath->entryNames[0], entryType);
         }
 
-        printf("ERROR: Couldn't find INode for '%s'.", entryPath->entryNames[0]);
+        printf(INODE_NOT_FOUND, entryPath->entryNames[0]);
         return false;
     }
 

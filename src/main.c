@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <limits.h>
-#include "commands/command.h"
+#include "command/command.h"
 #include "ufs/ufs.h"
+#include "miscelaneous/print.h"
 
 #define MAX_INODES 1000
 
@@ -13,7 +14,7 @@ int main()
 
     while (true)
     {
-        printf("\nsomeone@PC ");
+        printf(USER);
 
         char commandString[UCHAR_MAX];
 
@@ -22,8 +23,15 @@ int main()
             // Remove the trailing newline character, if present
             commandString[strcspn(commandString, "\n")] = '\0';
 
-            // Rest of the code
-            commandSwitch(&ufs, initializeCommand(commandString));
+
+            Command *command = initializeCommand(commandString);
+
+            if (!command)
+            {
+                continue;
+            }
+
+            commandSwitch(&ufs, command);
         }
         else
         {

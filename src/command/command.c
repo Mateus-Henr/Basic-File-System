@@ -40,7 +40,7 @@ Command *initializeCommand(char *commandLine)
         if (!command->command)
         {
             printf(ALLOCATION_ERROR, "Command's string");
-            return NULL;
+            exit(EXIT_FAILURE);
         }
 
         command->options = strdup(strtok(NULL, "-"));
@@ -48,17 +48,32 @@ Command *initializeCommand(char *commandLine)
         if (!command->options)
         {
             printf(ALLOCATION_ERROR, "Command's options");
-            return NULL;
+            exit(EXIT_FAILURE);
         }
 
         command->path = initializePath(strdup(strtok(NULL, " ")));
+
+        if (!command->path)
+        {
+            return NULL;
+        }
     }
     else
     {
-        char *token = strtok(commandLine, " ");
+        command->command = strdup(strtok(commandLine, " "));
 
-        command->command = strdup(token);
+        if (!command->command)
+        {
+            printf(ALLOCATION_ERROR, "Command's string");
+            exit(EXIT_FAILURE);
+        }
+
         command->path = initializePath(strtok(NULL, " "));
+
+        if (!command->path)
+        {
+            return NULL;
+        }
     }
 
     return command;
