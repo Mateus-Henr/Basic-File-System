@@ -1,14 +1,38 @@
 #include <stdio.h>
+#include <limits.h>
+#include "path/path.h"
+#include "ufs/ufs.h"
 
-#include "entry/timestamps.h"
+#define MAX_INODES 1000
 
 int main()
 {
-    Timestamps timestamps;
+    while (true)
+    {
+        char entryPath[CHAR_MAX];
 
-    initializeTimestamps(&timestamps);
+        if (!scanf("%s", entryPath))
+        {
+            printf("ERROR: Path invalid.");
+        }
 
-    displayTimestamps(&timestamps);
+        Path *path = initializePath(entryPath);
+
+        if (!path)
+        {
+            continue;
+        }
+
+        UFS ufs;
+        initializeUFS(&ufs, MAX_INODES);
+
+        createEntry(&ufs, path, DIRECTORY);
+        freePath(path);
+
+        printf("HEY");
+
+        return false;
+    }
 
     return 0;
 }

@@ -17,32 +17,7 @@ bool checkINodeCount(UFS *ufs)
     return true;
 }
 
-unsigned long getFormattedEntryPathSize(char *entryPath)
-{
-    unsigned long size = 0;
-
-    if (entryPath[0] != DELIMITER)
-    {
-        size++;
-    }
-
-    for (unsigned long i = 1; i < strlen(entryPath); i++)
-    {
-        if (entryPath[i] == DELIMITER)
-        {
-            size++;
-        }
-    }
-
-    return size;
-}
-
-char *getFormattedEntryPath(char *entryPath, int size)
-{
-
-}
-
-void initializeUFS(UFS *ufs, unsigned long maxINodes)
+void initializeUFS(UFS *ufs, long maxINodes)
 {
     ufs->maxINodes = maxINodes;
     ufs->freeINodeCount = 0;
@@ -54,6 +29,11 @@ void initializeUFS(UFS *ufs, unsigned long maxINodes)
     {
         printf("ERROR: Couldn't allocate memory for Inodes.");
         return;
+    }
+
+    for (long i = 0; i < maxINodes; i++)
+    {
+        ufs->iNodes[i] = NULL;
     }
 
     ufs->freeINodes = (INode **) malloc(maxINodes * sizeof(INode *));
@@ -78,33 +58,65 @@ INode *findINode(UFS *ufs, char *entryName)
     return NULL;
 }
 
-bool createEntry(UFS *ufs, char *entryPath, enum EntryType entryType)
+bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType)
 {
     if (!checkINodeCount(ufs))
     {
         return false;
     }
 
-    char *entryName = strtok(entryPath, DELIMITER);
+    // Root INode
+    INode *foundINode = findINode(ufs, entryPath->entryNames[0]);
 
-    while (entryName)
+    if (!foundINode && entryPath->size == 1)
     {
-        INode *node = findINode(ufs, entryName);
-        char *nextEntryName = strtok(NULL, DELIMITER);
+        ufs->iNodes[ufs->iNodeCount] = initializeINode(ufs->iNodeCount, entryPath->entryNames[0], entryType);
+        ufs->iNodeCount++;
+        return true;
+    }
 
-        if (!node)
+    for (long i = 1; i < entryPath->size; i++)
+    {
+        if (!foundINode)
         {
+            if (i == entryPath->size - 1)
+            {
+                ufs->iNodes[ufs->iNodeCount] = initializeINode(ufs->iNodeCount, entryPath->entryNames[i], entryType);
+                ufs->iNodeCount++;
+                return true;
+            }
 
+            printf("ERROR: Couldn't find INode for '%s'.", entryPath->entryNames[i]);
+            return false;
+        }
+
+        if (foundINode->entryContent.entryType == DIRECTORY)
+        {
+            long iNodeId = findINodeId(&foundINode->entryContent.directory, entryPath->entryNames[i]);
+
+            if (iNodeId == -1)
+            {
+                printf("ERROR: Couldn't find INode for '%s'.", entryPath->entryNames[i]);
+                return false;
+            }
+
+            foundINode = ufs->iNodes[iNodeId];
+        }
+        else
+        {
+            foundINode = NULL;
         }
     }
+
+    return false;
 }
 
-bool renameEntry(UFS *ufs, char *entryPath, char *newEntryName, enum EntryType entryType)
+bool renameEntry(UFS *ufs, Path *entryPath, char *newEntryName, enum EntryType entryType)
 {
 
 }
 
-bool moveEntry(UFS *ufs, char *entryPath, char *newEntryPath, enum EntryType entryType)
+bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath, enum EntryType entryType)
 {
     if (!checkINodeCount(ufs))
     {
@@ -115,12 +127,12 @@ bool moveEntry(UFS *ufs, char *entryPath, char *newEntryPath, enum EntryType ent
     return true;
 }
 
-bool deleteEntry(UFS *ufs, char *entryPath)
+bool deleteEntry(UFS *ufs, Path *entryPath)
 {
 
 }
 
-void displayEntryContent(UFS *ufs, char *entryPath)
+void displayEntryContent(UFS *ufs, Path *entryPath)
 {
 
 }

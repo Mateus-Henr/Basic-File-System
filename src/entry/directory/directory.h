@@ -2,7 +2,7 @@
 #define BASIC_FILE_SYSTEM_DIRECTORY_H
 
 #include <stdbool.h>
-#include "../../linkedlist/linked_list.h"
+#include "linkedlist/linked_list.h"
 
 typedef struct Directory
 {

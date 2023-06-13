@@ -3,26 +3,27 @@
 
 #include <stdbool.h>
 #include "i_node.h"
+#include "../path/path.h"
 
 typedef struct UFS
 {
     INode **iNodes;
     INode **freeINodes;
-    unsigned long maxINodes;
-    unsigned long freeINodeCount;
-    unsigned long iNodeCount;
+    long maxINodes;
+    long freeINodeCount;
+    long iNodeCount;
 } UFS;
 
-void initializeUFS(UFS *ufs, unsigned long maxINodes);
+void initializeUFS(UFS *ufs, long maxINodes);
 
-bool createEntry(UFS *ufs, char *entryPath, enum EntryType entryType);
+bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType);
 
-bool renameEntry(UFS *ufs, char *entryPath, char *newEntryName, enum EntryType entryType);
+bool renameEntry(UFS *ufs, Path *entryPath, char *newEntryName, enum EntryType entryType);
 
-bool moveEntry(UFS *ufs, char *entryPath, char *newEntryPath, enum EntryType entryType);
+bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath, enum EntryType entryType);
 
-bool deleteEntry(UFS *ufs, char *entryPath);
+bool deleteEntry(UFS *ufs, Path *entryPath);
 
-void displayEntryContent(UFS *ufs, char *entryPath);
+void displayEntryContent(UFS *ufs, Path *entryPath);
 
 #endif //BASIC_FILE_SYSTEM_UFS_H

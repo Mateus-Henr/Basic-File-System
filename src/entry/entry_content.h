@@ -6,7 +6,7 @@
 
 enum EntryType
 {
-    DIRECTORY, FILE
+    DIRECTORY, ARCHIVE
 };
 
 typedef struct EntryContent
