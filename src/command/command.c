@@ -33,16 +33,16 @@ Command *initializeCommand(char *commandLine)
         exit(EXIT_FAILURE);
     }
 
+    command->command = strdup(strtok(commandLine, " "));
+
+    if (!command->command)
+    {
+        printf(ALLOCATION_ERROR, "Command's string");
+        exit(EXIT_FAILURE);
+    }
+
     if (isThereAnyOptions(commandLine))
     {
-        command->command = strdup(strtok(commandLine, " "));
-
-        if (!command->command)
-        {
-            printf(ALLOCATION_ERROR, "Command's string");
-            exit(EXIT_FAILURE);
-        }
-
         command->options = strdup(strtok(NULL, "-"));
 
         if (!command->options)
@@ -50,30 +50,25 @@ Command *initializeCommand(char *commandLine)
             printf(ALLOCATION_ERROR, "Command's options");
             exit(EXIT_FAILURE);
         }
-
-        command->path = initializePath(strdup(strtok(NULL, " ")));
-
-        if (!command->path)
-        {
-            return NULL;
-        }
     }
     else
     {
-        command->command = strdup(strtok(commandLine, " "));
+        command->options = NULL;
+    }
 
-        if (!command->command)
-        {
-            printf(ALLOCATION_ERROR, "Command's string");
-            exit(EXIT_FAILURE);
-        }
+    char *pathString = strdup(strtok(NULL, " "));
 
-        command->path = initializePath(strtok(NULL, " "));
+    if (!pathString)
+    {
+        printf(INVALID_COMMAND, commandLine);
+        return NULL;
+    }
 
-        if (!command->path)
-        {
-            return NULL;
-        }
+    command->path = initializePath(pathString);
+
+    if (!command->path)
+    {
+        return NULL;
     }
 
     return command;

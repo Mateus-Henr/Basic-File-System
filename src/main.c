@@ -12,6 +12,8 @@ int main()
     UFS ufs;
     initializeUFS(&ufs, MAX_INODES);
 
+    printf(VALID_COMMANDS);
+
     while (true)
     {
         printf(USER);
@@ -22,7 +24,6 @@ int main()
         {
             // Remove the trailing newline character, if present
             commandString[strcspn(commandString, "\n")] = '\0';
-
 
             Command *command = initializeCommand(commandString);
 
