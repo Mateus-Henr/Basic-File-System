@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "block.h"
+#include "../../miscelaneous/error.h"
 
 
 Block *initializeBlock(char *content, long size)
@@ -10,7 +11,7 @@ Block *initializeBlock(char *content, long size)
 
     if (!block)
     {
-        printf("ERROR: Couldn't allocate memory for Block.");
+        printf(ALLOCATION_ERROR, "Block");
         exit(EXIT_FAILURE);
     }
 
@@ -19,7 +20,8 @@ Block *initializeBlock(char *content, long size)
 
     if (!block->content)
     {
-        printf("ERROR: Couldn't allocate memory for Block's content.");
+        printf(ALLOCATION_ERROR, "Block's Content.");
+        free(block);
         exit(EXIT_FAILURE);
     }
 

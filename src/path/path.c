@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "path.h"
+#include "../miscelaneous/error.h"
 
 #define DELIMITER "/"
 
@@ -27,7 +28,7 @@ Path *initializePath(char *entryPath)
 
     if (!path)
     {
-        printf("ERROR: Couldn't allocate memory for Path.");
+        printf(ALLOCATION_ERROR, "Path");
         exit(EXIT_FAILURE);
     }
 
@@ -35,16 +36,16 @@ Path *initializePath(char *entryPath)
 
     if (path->size == 0)
     {
-        printf("ERROR: Entry path invalid.");
+        printf(INVALID_ENTRY_PATH, entryPath);
         free(path);
-        exit(EXIT_FAILURE);
+        return NULL;
     }
 
     path->entryNames = (char **) malloc(path->size * sizeof(char *));
 
     if (!path->entryNames)
     {
-        printf("ERROR: Couldn't allocate memory for Path's entry names.");
+        printf(ALLOCATION_ERROR, "Path's Entry Names");
         free(path);
         exit(EXIT_FAILURE);
     }

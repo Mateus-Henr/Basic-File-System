@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "linked_list.h"
+#include "../../../miscelaneous/error.h"
 
 void initializeLinkedList(LinkedList *linkedList)
 {
@@ -17,7 +18,7 @@ bool insertNode(LinkedList linkedList, long iNodeId, char *entryName)
 
     if (!newNode)
     {
-        printf("ERROR: Couldn't allocate memory for node.");
+        printf(ALLOCATION_ERROR, "Linked List's Node");
         exit(EXIT_FAILURE);
     }
 

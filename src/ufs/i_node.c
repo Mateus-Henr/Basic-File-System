@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "i_node.h"
+#include "../miscelaneous/error.h"
 
 
 INode *initializeINode(long id, char *entryName, enum EntryType entryType)
@@ -11,7 +12,7 @@ INode *initializeINode(long id, char *entryName, enum EntryType entryType)
 
     if (!iNode)
     {
-        printf("ERROR: Couldn't allocate INode in memory.");
+        printf(ALLOCATION_ERROR, "INode");
         exit(EXIT_FAILURE);
     }
 
@@ -22,7 +23,7 @@ INode *initializeINode(long id, char *entryName, enum EntryType entryType)
 
     if (!iNode->entryName)
     {
-        printf("ERROR: Couldn't allocate string for INode in memory.");
+        printf(ALLOCATION_ERROR, "INode Entry Name");
         free(iNode);
         exit(EXIT_FAILURE);
     }

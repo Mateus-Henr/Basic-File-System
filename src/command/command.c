@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "command.h"
+#include "../miscelaneous/error.h"
 
 #define MKDIR "mkdir"
 #define TOUCH "touch"
 #define RM "rm"
-#define R_OPTION "-r"
 #define CAT "cat"
 #define LS "ls"
 
@@ -29,7 +29,7 @@ Command *initializeCommand(char *commandLine)
 
     if (!command)
     {
-        printf("ERROR: Couldn't allocate memory for Command.");
+        printf(ALLOCATION_ERROR, "Command");
         exit(EXIT_FAILURE);
     }
 
@@ -39,7 +39,7 @@ Command *initializeCommand(char *commandLine)
 
         if (!command->command)
         {
-            printf("ERROR: Couldn't allocate memory for Command.");
+            printf(ALLOCATION_ERROR, "Command's string");
             return NULL;
         }
 
@@ -47,7 +47,7 @@ Command *initializeCommand(char *commandLine)
 
         if (!command->options)
         {
-            printf("ERROR: Couldn't allocate memory for Command's options.");
+            printf(ALLOCATION_ERROR, "Command's options");
             return NULL;
         }
 
@@ -88,7 +88,7 @@ void commandSwitch(UFS *ufs, Command *command)
     }
     else
     {
-        printf("Invalid command");
+        printf(INVALID_COMMAND, command->command);
     }
 }
 

@@ -3,6 +3,7 @@
 #include "string.h"
 
 #include "ufs.h"
+#include "../miscelaneous/error.h"
 
 #define DELIMITER "/"
 
@@ -27,7 +28,7 @@ void initializeUFS(UFS *ufs, long maxINodes)
 
     if (!ufs->iNodes)
     {
-        printf("ERROR: Couldn't allocate memory for Inodes.");
+        printf(ALLOCATION_ERROR, "UFS INodes");
         exit(EXIT_FAILURE);
     }
 
@@ -40,7 +41,7 @@ void initializeUFS(UFS *ufs, long maxINodes)
 
     if (!ufs->freeINodes)
     {
-        printf("ERROR: Couldn't allocate memory for free Inodes.");
+        printf(ALLOCATION_ERROR, "UFS Free INodes.");
         free(ufs->iNodes);
         exit(EXIT_FAILURE);
     }
