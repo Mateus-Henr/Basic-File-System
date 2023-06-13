@@ -12,7 +12,7 @@ INode *initializeINode(long id, char *entryName, enum EntryType entryType)
     if (!iNode)
     {
         printf("ERROR: Couldn't allocate INode in memory.");
-        return NULL;
+        exit(EXIT_FAILURE);
     }
 
     iNode->id = id;
@@ -23,7 +23,8 @@ INode *initializeINode(long id, char *entryName, enum EntryType entryType)
     if (!iNode->entryName)
     {
         printf("ERROR: Couldn't allocate string for INode in memory.");
-        return NULL;
+        free(iNode);
+        exit(EXIT_FAILURE);
     }
 
     return iNode;

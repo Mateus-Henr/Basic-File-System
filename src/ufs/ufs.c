@@ -28,7 +28,7 @@ void initializeUFS(UFS *ufs, long maxINodes)
     if (!ufs->iNodes)
     {
         printf("ERROR: Couldn't allocate memory for Inodes.");
-        return;
+        exit(EXIT_FAILURE);
     }
 
     for (long i = 0; i < maxINodes; i++)
@@ -41,7 +41,8 @@ void initializeUFS(UFS *ufs, long maxINodes)
     if (!ufs->freeINodes)
     {
         printf("ERROR: Couldn't allocate memory for free Inodes.");
-        return;
+        free(ufs->iNodes);
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -58,41 +59,26 @@ INode *findINode(UFS *ufs, char *entryName)
     return NULL;
 }
 
-bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType)
+bool createSingleNode(UFS *ufs, char *entryName, enum EntryType entryType)
 {
-    if (!checkINodeCount(ufs))
-    {
-        return false;
-    }
+    ufs->iNodes[ufs->iNodeCount] = initializeINode(ufs->iNodeCount, entryName, entryType);
+    ufs->iNodeCount++;
+    return true;
+}
 
-    // Root INode
-    INode *foundINode = findINode(ufs, entryPath->entryNames[0]);
-
-    if (!foundINode && entryPath->size == 1)
-    {
-        ufs->iNodes[ufs->iNodeCount] = initializeINode(ufs->iNodeCount, entryPath->entryNames[0], entryType);
-        ufs->iNodeCount++;
-        return true;
-    }
-
+bool createEntryHierarchy(UFS *ufs, INode *parentINode, Path *entryPath, enum EntryType entryType)
+{
     for (long i = 1; i < entryPath->size; i++)
     {
-        if (!foundINode)
+        if (!parentINode)
         {
-            if (i == entryPath->size - 1)
-            {
-                ufs->iNodes[ufs->iNodeCount] = initializeINode(ufs->iNodeCount, entryPath->entryNames[i], entryType);
-                ufs->iNodeCount++;
-                return true;
-            }
-
             printf("ERROR: Couldn't find INode for '%s'.", entryPath->entryNames[i]);
             return false;
         }
 
-        if (foundINode->entryContent.entryType == DIRECTORY)
+        if (parentINode->entryContent.entryType == DIRECTORY)
         {
-            long iNodeId = findINodeId(&foundINode->entryContent.directory, entryPath->entryNames[i]);
+            long iNodeId = findINodeId(&parentINode->entryContent.directory, entryPath->entryNames[i]);
 
             if (iNodeId == -1)
             {
@@ -100,15 +86,39 @@ bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType)
                 return false;
             }
 
-            foundINode = ufs->iNodes[iNodeId];
+            parentINode = ufs->iNodes[iNodeId];
         }
         else
         {
-            foundINode = NULL;
+            parentINode = NULL;
         }
     }
 
-    return false;
+    return createSingleNode(ufs, entryPath->entryNames[entryPath->size - 1], entryType);
+}
+
+bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType)
+{
+    if (!checkINodeCount(ufs))
+    {
+        return false;
+    }
+
+    // Root node
+    INode *foundINode = findINode(ufs, entryPath->entryNames[0]);
+
+    if (!foundINode)
+    {
+        if (entryPath->size == 1)
+        {
+            return createSingleNode(ufs, entryPath->entryNames[0], entryType);
+        }
+
+        printf("ERROR: Couldn't find INode for '%s'.", entryPath->entryNames[0]);
+        return false;
+    }
+
+    return createEntryHierarchy(ufs, foundINode, entryPath, entryType);
 }
 
 bool renameEntry(UFS *ufs, Path *entryPath, char *newEntryName, enum EntryType entryType)

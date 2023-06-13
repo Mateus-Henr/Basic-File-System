@@ -1,37 +1,34 @@
 #include <stdio.h>
+#include <string.h>
 #include <limits.h>
-#include "path/path.h"
+#include "commands/command.h"
 #include "ufs/ufs.h"
 
 #define MAX_INODES 1000
 
 int main()
 {
+    UFS ufs;
+    initializeUFS(&ufs, MAX_INODES);
+
     while (true)
     {
-        char entryPath[CHAR_MAX];
+        printf("\nsomeone@PC ");
 
-        if (!scanf("%s", entryPath))
+        char commandString[UCHAR_MAX];
+
+        if (fgets(commandString, sizeof(commandString), stdin) != NULL)
         {
-            printf("ERROR: Path invalid.");
+            // Remove the trailing newline character, if present
+            commandString[strcspn(commandString, "\n")] = '\0';
+
+            // Rest of the code
+            commandSwitch(&ufs, initializeCommand(commandString));
         }
-
-        Path *path = initializePath(entryPath);
-
-        if (!path)
+        else
         {
-            continue;
+            printf("ERROR: Failed to read input.");
         }
-
-        UFS ufs;
-        initializeUFS(&ufs, MAX_INODES);
-
-        createEntry(&ufs, path, DIRECTORY);
-        freePath(path);
-
-        printf("HEY");
-
-        return false;
     }
 
     return 0;

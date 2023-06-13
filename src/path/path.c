@@ -28,7 +28,7 @@ Path *initializePath(char *entryPath)
     if (!path)
     {
         printf("ERROR: Couldn't allocate memory for Path.");
-        return NULL;
+        exit(EXIT_FAILURE);
     }
 
     path->size = getEntryPathSize(entryPath);
@@ -37,7 +37,7 @@ Path *initializePath(char *entryPath)
     {
         printf("ERROR: Entry path invalid.");
         free(path);
-        return NULL;
+        exit(EXIT_FAILURE);
     }
 
     path->entryNames = (char **) malloc(path->size * sizeof(char *));
@@ -46,7 +46,7 @@ Path *initializePath(char *entryPath)
     {
         printf("ERROR: Couldn't allocate memory for Path's entry names.");
         free(path);
-        return NULL;
+        exit(EXIT_FAILURE);
     }
 
     path->entryNames[0] = strdup(strtok(entryPath, DELIMITER));

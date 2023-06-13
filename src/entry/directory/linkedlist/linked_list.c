@@ -18,7 +18,7 @@ bool insertNode(LinkedList linkedList, long iNodeId, char *entryName)
     if (!newNode)
     {
         printf("ERROR: Couldn't allocate memory for node.");
-        return false;
+        exit(EXIT_FAILURE);
     }
 
     newNode->iNodeId = iNodeId;

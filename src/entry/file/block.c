@@ -11,7 +11,7 @@ Block *initializeBlock(char *content, long size)
     if (!block)
     {
         printf("ERROR: Couldn't allocate memory for Block.");
-        return NULL;
+        exit(EXIT_FAILURE);
     }
 
     block->size = size;
@@ -20,7 +20,7 @@ Block *initializeBlock(char *content, long size)
     if (!block->content)
     {
         printf("ERROR: Couldn't allocate memory for Block's content.");
-        return NULL;
+        exit(EXIT_FAILURE);
     }
 
     return block;
