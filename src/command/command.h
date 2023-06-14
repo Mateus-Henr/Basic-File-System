@@ -8,6 +8,7 @@ typedef struct Command
     char *command;
     char *options;
     Path *path;
+    Path *secondPath;
 } Command;
 
 Command *initializeCommand(char *commandLine);

@@ -23,6 +23,8 @@ bool insertNode(LinkedList *linkedList, long iNodeId, char *entryName);
 
 long getINodeNumber(LinkedList *linkedList, char *entryName);
 
+bool changeNodeName(LinkedList *linkedList, char *entryName, char *newEntryName);
+
 bool removeNode(LinkedList *linkedList, char *entryName);
 
 void displayLinkedList(LinkedList *linkedList);

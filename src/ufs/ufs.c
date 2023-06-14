@@ -155,10 +155,29 @@ bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType)
     return addEntry(&parentINode->entryContent.directory, createdINode->id, createdINode->entryName);
 }
 
-
-bool renameEntry(UFS *ufs, Path *entryPath, Path *newEntryName, enum EntryType entryType)
+bool renameEntry(UFS *ufs, Path *entryPath, char *newEntryName)
 {
+    INode *parentINode = findParentINode(ufs, entryPath);
 
+    if (!parentINode)
+    {
+        return false;
+    }
+
+    int idFound = findINodeIdInDirectory(&parentINode->entryContent.directory,
+                                         entryPath->entryNames[entryPath->size - 1]);
+
+    if (idFound == -1)
+    {
+        printf(INODE_NOT_FOUND, entryPath->entryNames[entryPath->size - 1]);
+        return false;
+    }
+
+    changeEntryName(ufs->iNodes[idFound], entryPath->entryNames[entryPath->size - 1]);
+    changeEntryNameInDirectory(&parentINode->entryContent.directory,
+                               entryPath->entryNames[entryPath->size - 1],
+                               newEntryName);
+    return true;
 }
 
 bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath, enum EntryType entryType)

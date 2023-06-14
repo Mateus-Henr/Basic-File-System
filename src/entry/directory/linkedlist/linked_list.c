@@ -58,6 +58,37 @@ long getINodeNumber(LinkedList *linkedList, char *entryName)
     return -1;
 }
 
+bool changeNodeName(LinkedList *linkedList, char *entryName, char *newEntryName)
+{
+    Node *currNode = linkedList->head;
+
+    while (currNode)
+    {
+        if (strcmp(currNode->entryName, entryName) == 0)
+        {
+            char *name = strdup(newEntryName);
+
+            if (!name)
+            {
+                printf(ERROR_RENAME);
+                return false;
+            }
+
+            if (currNode->entryName)
+            {
+                free(currNode->entryName);
+            }
+
+            currNode->entryName = name;
+            return true;
+        }
+
+        currNode = currNode->nextNode;
+    }
+
+    return false;
+}
+
 bool removeNode(LinkedList *linkedList, char *entryName)
 {
     Node *currNode = linkedList->head;

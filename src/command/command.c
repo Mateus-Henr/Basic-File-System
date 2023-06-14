@@ -7,6 +7,7 @@
 #define MKDIR "mkdir"
 #define TOUCH "touch"
 #define RM "rm"
+#define MV "mv"
 #define CAT "cat"
 #define LS "ls"
 
@@ -65,11 +66,33 @@ Command *initializeCommand(char *commandLine)
         return NULL;
     }
 
+    char *secondPathString = strdup(strtok(NULL, " "));
+
     command->path = initializePath(pathString);
 
     if (!command->path)
     {
         return NULL;
+    }
+
+    if (strcmp(command->command, MV) == 0)
+    {
+        if (!secondPathString)
+        {
+            printf(INVALID_COMMAND, commandLine);
+            return NULL;
+        }
+
+        command->secondPath = initializePath(secondPathString);
+
+        if (!command->secondPath)
+        {
+            return NULL;
+        }
+    }
+    else
+    {
+        command->secondPath = NULL;
     }
 
     return command;
@@ -84,6 +107,10 @@ void commandSwitch(UFS *ufs, Command *command)
     else if (strcmp(command->command, TOUCH) == 0)
     {
         createEntry(ufs, command->path, ARCHIVE);
+    }
+    else if (strcmp(command->command, MV) == 0)
+    {
+        renameEntry(ufs, command->path, command->secondPath->entryNames[command->secondPath->size - 1]);
     }
     else if (strcmp(command->command, RM) == 0)
     {
@@ -118,6 +145,7 @@ void freeCommand(Command *command)
         }
 
         freePath(command->path);
+        freePath(command->secondPath);
         free(command);
     }
 }

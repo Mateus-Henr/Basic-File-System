@@ -31,6 +31,25 @@ INode *initializeINode(long id, char *entryName, enum EntryType entryType)
     return iNode;
 }
 
+bool changeEntryName(INode *iNode, char *newName)
+{
+    char *name = strdup(newName);
+
+    if (!name)
+    {
+        printf(ERROR_RENAME);
+        return false;
+    }
+
+    if (iNode->entryName)
+    {
+        free(iNode->entryName);
+    }
+
+    iNode->entryName = name;
+    return true;
+}
+
 void displayINode(INode *iNode)
 {
     printf("\nID: %ld\nName: %s", iNode->id, iNode->entryName);

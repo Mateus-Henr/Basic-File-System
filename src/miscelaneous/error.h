@@ -21,5 +21,6 @@
 #define DIRECTORY_EXISTS "%s\nERROR: Directory already exists.\033[0m\n", RED
 #define FILE_EXISTS "%s\nERROR: File already exists.\033[0m\n", RED
 #define FILE_IS_NOT_DIRECTORY "%s\nERROR: Couldn't create entry, '%s' is not a directory.\033[0m\n", RED
+#define ERROR_RENAME "%s\nERROR: Couldn't change entry name.\033[0m\n", RED
 
 #endif //BASIC_FILE_SYSTEM_ERROR_H
