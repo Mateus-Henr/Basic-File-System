@@ -107,7 +107,6 @@ bool createEntryHierarchy(UFS *ufs, INode *parentINode, Path *entryPath, enum En
         }
 
         INode *createdINode = createSingleNode(ufs, entryPath->entryNames[entryPath->size - 1], entryType);
-
         return addEntry(&parentINode->entryContent.directory, createdINode->id, createdINode->entryName);
     }
     else
@@ -118,8 +117,7 @@ bool createEntryHierarchy(UFS *ufs, INode *parentINode, Path *entryPath, enum En
             return true;
         }
 
-        createSingleNode(ufs, entryPath->entryNames[entryPath->size - 1], entryType);
-        return true;
+        return createSingleNode(ufs, entryPath->entryNames[entryPath->size - 1], entryType);
     }
 }
 
@@ -130,30 +128,27 @@ bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType)
         return false;
     }
 
-    // Root node
     INode *foundINode = findINode(ufs, entryPath->entryNames[0]);
 
     if (!foundINode)
     {
-        // If only the root path is specified, such as "mkdir /root".
         if (entryPath->size == 1)
         {
-            createSingleNode(ufs, entryPath->entryNames[0], entryType);
-            return true;
+            return createSingleNode(ufs, entryPath->entryNames[0], entryType);
         }
 
         printf(INODE_NOT_FOUND, entryPath->entryNames[0]);
         return false;
     }
-    else
+
+    // Checking if root directory already exists.
+    if (entryPath->size == 1 && foundINode->entryContent.entryType == DIRECTORY)
     {
-        if (entryPath->size == 1)
-        {
-            printf(DIRECTORY_EXISTS);
-            return false;
-        }
+        printf(DIRECTORY_EXISTS);
+        return false;
     }
 
+    // Checking if root is not a file.
     if (foundINode->entryContent.entryType == ARCHIVE)
     {
         printf(FILE_IS_NOT_DIRECTORY, entryPath->entryNames[0]);

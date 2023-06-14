@@ -34,7 +34,7 @@ Command *initializeCommand(char *commandLine)
         exit(EXIT_FAILURE);
     }
 
-    command->command = strdup(strtok(commandLine, " "));
+    command->command = strdup(strtok(strdup(commandLine), " "));
 
     if (!command->command)
     {
