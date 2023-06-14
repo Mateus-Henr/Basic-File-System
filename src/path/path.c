@@ -10,10 +10,11 @@
 long getEntryPathSize(char *entryPath)
 {
     long size = 1;
+    long pathSize = (long) strlen(entryPath);
 
-    for (long i = 1; i < strlen(entryPath); i++)
+    for (long i = 1; i < pathSize; i++)
     {
-        if (entryPath[i] == DELIMITER[0])
+        if (entryPath[i] == DELIMITER[0] && (i + 1) != pathSize)
         {
             size++;
         }
