@@ -68,6 +68,7 @@ INode *createSingleNode(UFS *ufs, char *entryName, enum EntryType entryType)
 
 bool createEntryHierarchy(UFS *ufs, INode *parentINode, Path *entryPath, enum EntryType entryType)
 {
+    // Checking if we can find the path by going down the iNode hierarchy.
     for (long i = 1; i < entryPath->size - 1; i++)
     {
         if (!parentINode)
@@ -95,14 +96,31 @@ bool createEntryHierarchy(UFS *ufs, INode *parentINode, Path *entryPath, enum En
         }
     }
 
-    INode *createdINode = createSingleNode(ufs, entryPath->entryNames[entryPath->size - 1], entryType);
+    int idFound = findINodeId(&parentINode->entryContent.directory, entryPath->entryNames[entryPath->size - 1]);
 
     if (entryType == DIRECTORY)
     {
+        if (idFound != -1)
+        {
+            printf(DIRECTORY_EXISTS);
+            return false;
+        }
+
+        INode *createdINode = createSingleNode(ufs, entryPath->entryNames[entryPath->size - 1], entryType);
+
         return addEntry(&parentINode->entryContent.directory, createdINode->id, createdINode->entryName);
     }
+    else
+    {
+        if (idFound != -1)
+        {
+            updateEntryMetadata(&ufs->iNodes[idFound]->entryMetadata);
+            return true;
+        }
 
-    return true;
+        createSingleNode(ufs, entryPath->entryNames[entryPath->size - 1], entryType);
+        return true;
+    }
 }
 
 bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType)
@@ -126,6 +144,14 @@ bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType)
 
         printf(INODE_NOT_FOUND, entryPath->entryNames[0]);
         return false;
+    }
+    else
+    {
+        if (entryPath->size == 1)
+        {
+            printf(DIRECTORY_EXISTS);
+            return false;
+        }
     }
 
     if (foundINode->entryContent.entryType == ARCHIVE)

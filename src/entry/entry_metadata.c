@@ -14,6 +14,12 @@ void initializeEntryMetadata(EntryMetadata *entryMetadata,
     initializeTimestamps(&entryMetadata->timestamps);
 }
 
+void updateEntryMetadata(EntryMetadata *entryMetadata)
+{
+    updateLastAccess(&entryMetadata->timestamps);
+    updateLastModification(&entryMetadata->timestamps);
+}
+
 void displayEntryMetadata(EntryMetadata *entryMetadata)
 {
     printf("\nMetadata: Size=%zu bytes, Permissions=%o, Ownership=%lu",

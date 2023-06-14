@@ -19,6 +19,8 @@ void initializeEntryMetadata(EntryMetadata *entryMetadata,
                              size_t sizeInBytes,
                              long ownership);
 
+void updateEntryMetadata(EntryMetadata *entryMetadata);
+
 void displayEntryMetadata(EntryMetadata *entryMetadata);
 
 #endif //BASIC_FILE_SYSTEM_ENTRY_METADATA_H
