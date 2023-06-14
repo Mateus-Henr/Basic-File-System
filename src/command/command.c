@@ -44,7 +44,7 @@ Command *initializeCommand(char *commandLine)
 
     if (isThereAnyOptions(commandLine))
     {
-        command->options = strdup(strtok(NULL, "-"));
+        command->options = strdup(strtok(NULL, " -"));
 
         if (!command->options)
         {
