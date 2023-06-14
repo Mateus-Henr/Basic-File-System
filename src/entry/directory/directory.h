@@ -13,7 +13,7 @@ void initializeDirectory(Directory *directory);
 
 bool addEntry(Directory *directory, long iNodeId, char *entryName);
 
-long findINodeId(Directory *directory, char *entryName);
+long findINodeIdInDirectory(Directory *directory, char *entryName);
 
 bool removeEntry(Directory *directory, char *entryName);
 

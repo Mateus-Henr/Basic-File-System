@@ -10,7 +10,7 @@ bool addEntry(Directory *directory, long iNodeId, char *entryName)
     return insertNode(&directory->entries, iNodeId, entryName);
 }
 
-long findINodeId(Directory *directory, char *entryName)
+long findINodeIdInDirectory(Directory *directory, char *entryName)
 {
     return getINodeNumber(&directory->entries, entryName);
 }
