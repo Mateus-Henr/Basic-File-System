@@ -128,11 +128,11 @@ bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType)
     // Check if entry already exists.
     if (idFound != -1)
     {
-        parentINode = ufs->iNodes[idFound];
+        INode *existingINode = ufs->iNodes[idFound];
 
         if (entryType == DIRECTORY)
         {
-            if (parentINode->entryContent.entryType == ARCHIVE)
+            if (existingINode->entryContent.entryType == ARCHIVE)
             {
                 printf(FILE_EXISTS);
                 return false;
@@ -141,13 +141,13 @@ bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType)
             printf(DIRECTORY_EXISTS);
             return false;
         }
-        else if (parentINode->entryContent.entryType == DIRECTORY)
+        else if (existingINode->entryContent.entryType == DIRECTORY)
         {
             printf(FILE_EXISTS);
             return false;
         }
 
-        updateEntryMetadata(&ufs->iNodes[idFound]->entryMetadata);
+        updateEntryMetadata(&existingINode->entryMetadata);
         return true;
     }
 
