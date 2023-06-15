@@ -118,7 +118,7 @@ void commandSwitch(UFS *ufs, Command *command)
     }
     else if (strcmp(command->command, CAT) == 0)
     {
-        displayEntry(ufs, command->path);
+        displayFile(ufs, command->path);
     }
     else if (strcmp(command->command, LS) == 0)
     {

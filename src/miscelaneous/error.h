@@ -23,5 +23,6 @@
 #define FILE_IS_NOT_DIRECTORY "%s\nERROR: Couldn't create entry, '%s' is not a directory.\033[0m\n", RED
 #define ERROR_RENAME "%s\nERROR: Couldn't change entry name.\033[0m\n", RED
 #define INPUT_ERROR "%s\nERROR: Failed to read input.\033[0m\n", RED
+#define FILE_IS_DIRECTORY "%s\nERROR: '%s' is a directory.\033[0m\n", RED
 
 #endif //BASIC_FILE_SYSTEM_ERROR_H

@@ -26,4 +26,6 @@ bool deleteEntry(UFS *ufs, Path *entryPath);
 
 void displayEntry(UFS *ufs, Path *entryPath);
 
+void displayFile(UFS *ufs, Path *entryPath);
+
 #endif //BASIC_FILE_SYSTEM_UFS_H

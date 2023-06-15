@@ -15,6 +15,8 @@ typedef struct File
 
 void initializeFile(File *file, char *content, long blockSize);
 
+void displayFileContent(File *file);
+
 void freeFile(File *file);
 
 #endif //BASIC_FILE_SYSTEM_FILE_H

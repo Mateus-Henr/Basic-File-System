@@ -232,3 +232,30 @@ void displayEntry(UFS *ufs, Path *entryPath)
 
     traverseDirectory(ufs, &ufs->iNodes[idFound]->entryContent.directory, idFound, 1);
 }
+
+void displayFile(UFS *ufs, Path *entryPath)
+{
+    INode *parentINode = findParentINode(ufs, entryPath);
+
+    if (!parentINode)
+    {
+        return;
+    }
+
+    int idFound = findINodeIdInDirectory(&parentINode->entryContent.directory,
+                                         entryPath->entryNames[entryPath->size - 1]);
+
+    if (idFound == -1)
+    {
+        printf(INODE_NOT_FOUND, entryPath->entryNames[entryPath->size - 1]);
+        return;
+    }
+
+    if (ufs->iNodes[idFound]->entryContent.entryType == DIRECTORY)
+    {
+        printf(FILE_IS_DIRECTORY, entryPath->entryNames[entryPath->size - 1]);
+        return;
+    }
+
+    displayFileContent(&ufs->iNodes[idFound]->entryContent.file);
+}
