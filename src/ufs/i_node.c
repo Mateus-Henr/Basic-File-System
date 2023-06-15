@@ -31,23 +31,28 @@ INode *initializeINode(long id, char *entryName, enum EntryType entryType)
     return iNode;
 }
 
-bool changeEntryName(INode *iNode, char *newName)
+bool changeINodeEntryName(INode *iNode, char *newName)
 {
-    char *name = strdup(newName);
+    newName = strdup(newName);
 
-    if (!name)
+    if (!newName)
     {
         printf(ERROR_RENAME);
         return false;
     }
+
+    bool status = changeEntryNameInDirectory(&iNode->entryContent.directory,
+                                             iNode->entryName,
+                                             newName);
 
     if (iNode->entryName)
     {
         free(iNode->entryName);
     }
 
-    iNode->entryName = name;
-    return true;
+    iNode->entryName = newName;
+
+    return status;
 }
 
 void displayINode(INode *iNode)

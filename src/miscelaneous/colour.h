@@ -16,6 +16,7 @@
 #define MAGENTA "\033[35m"      // Magenta text color
 #define CYAN    "\033[36m"      // Cyan text color
 #define WHITE   "\033[37m"      // White text color
+#define ORANGE  "\x1B[38;5;208m"
 
 // Background color
 #define B_BLACK   "\033[40m"    // Black background color

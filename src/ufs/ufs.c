@@ -6,12 +6,13 @@
 #include "../miscelaneous/error.h"
 
 #define DELIMITER "/"
+#define ROOT_INODE 0
 
 void initializeUFS(UFS *ufs, long maxINodes)
 {
     ufs->maxINodes = maxINodes;
-    ufs->freeINodeCount = 0;
-    ufs->iNodeCount = 0;
+    ufs->iNodeCount = 1;
+    ufs->freeINodeCount = maxINodes - ufs->iNodeCount;
 
     ufs->iNodes = (INode **) malloc(maxINodes * sizeof(INode *));
 
@@ -21,7 +22,9 @@ void initializeUFS(UFS *ufs, long maxINodes)
         exit(EXIT_FAILURE);
     }
 
-    for (long i = 0; i < maxINodes; i++)
+    ufs->iNodes[ROOT_INODE] = initializeINode(ROOT_INODE, "/", DIRECTORY);
+
+    for (long i = 1; i < maxINodes; i++)
     {
         ufs->iNodes[i] = NULL;
     }
@@ -36,19 +39,6 @@ void initializeUFS(UFS *ufs, long maxINodes)
     }
 }
 
-INode *findINode(UFS *ufs, char *entryName)
-{
-    for (long i = 0; i < ufs->iNodeCount; i++)
-    {
-        if (strcmp(ufs->iNodes[i]->entryName, entryName) == 0)
-        {
-            return ufs->iNodes[i];
-        }
-    }
-
-    return NULL;
-}
-
 INode *createSingleNode(UFS *ufs, char *entryName, enum EntryType entryType)
 {
     return ufs->iNodes[ufs->iNodeCount++] = initializeINode(ufs->iNodeCount, entryName, entryType);
@@ -56,9 +46,9 @@ INode *createSingleNode(UFS *ufs, char *entryName, enum EntryType entryType)
 
 INode *findParentINode(UFS *ufs, Path *entryPath)
 {
-    INode *parentINode = findINode(ufs, entryPath->entryNames[0]);
+    INode *parentINode = ufs->iNodes[ROOT_INODE];
 
-    for (long i = 1; i < entryPath->size - 1; i++)
+    for (long i = 0; i < entryPath->size - 1; i++)
     {
         if (!parentINode)
         {
@@ -101,18 +91,6 @@ bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType)
 
     if (!parentINode)
     {
-        // Check if it is root entry that is going to be created.
-        if (entryPath->size == 1)
-        {
-            return createSingleNode(ufs, entryPath->entryNames[0], entryType);
-        }
-
-        return false;
-    }
-
-    if (entryPath->size == 1 && parentINode->entryContent.entryType == DIRECTORY)
-    {
-        printf(DIRECTORY_EXISTS);
         return false;
     }
 
@@ -173,11 +151,7 @@ bool renameEntry(UFS *ufs, Path *entryPath, char *newEntryName)
         return false;
     }
 
-    changeEntryName(ufs->iNodes[idFound], entryPath->entryNames[entryPath->size - 1]);
-    changeEntryNameInDirectory(&parentINode->entryContent.directory,
-                               entryPath->entryNames[entryPath->size - 1],
-                               newEntryName);
-    return true;
+    return changeINodeEntryName(ufs->iNodes[idFound], newEntryName);
 }
 
 bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath, enum EntryType entryType)

@@ -4,6 +4,7 @@
 #include "command/command.h"
 #include "ufs/ufs.h"
 #include "miscelaneous/print.h"
+#include "miscelaneous/error.h"
 
 #define MAX_INODES 1000
 
@@ -20,12 +21,16 @@ int main()
 
         char commandString[UCHAR_MAX];
 
-        /// TODO: Issue - Press Enter without typing anything.
-        ///       Fix - Create a pre-checking for the command string.
         if (fgets(commandString, sizeof(commandString), stdin) != NULL)
         {
+            if (commandString[0] == '\n')
+            {
+                continue;
+            }
+
             // Remove the trailing newline character, if present
             commandString[strcspn(commandString, "\n")] = '\0';
+            commandString[strcspn(commandString, "\r")] = '\0';
 
             Command *command = initializeCommand(commandString);
 
@@ -39,7 +44,7 @@ int main()
         }
         else
         {
-            printf("ERROR: Failed to read input.");
+            printf(INPUT_ERROR);
         }
     }
 }

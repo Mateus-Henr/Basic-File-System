@@ -66,21 +66,12 @@ bool changeNodeName(LinkedList *linkedList, char *entryName, char *newEntryName)
     {
         if (strcmp(currNode->entryName, entryName) == 0)
         {
-            char *name = strdup(newEntryName);
-
-            if (!name)
-            {
-                printf(ERROR_RENAME);
-                return false;
-            }
-
             if (currNode->entryName)
             {
                 free(currNode->entryName);
             }
 
-            currNode->entryName = name;
-            return true;
+            return currNode->entryName = newEntryName;
         }
 
         currNode = currNode->nextNode;
@@ -129,12 +120,25 @@ void displayLinkedList(LinkedList *linkedList)
 {
     Node *currNode = linkedList->head;
 
+    printf("\n");
+
     while (currNode)
     {
-        printf("\n\n-> %ld\n->%s", currNode->iNodeId, currNode->entryName);
+        printf("%s|%s %ld %s%s - %s |",
+               CYAN,
+               ORANGE,
+               currNode->iNodeId,
+               RESET,
+               CYAN,
+               currNode->entryName);
 
         currNode = currNode->nextNode;
+
+        if (currNode)
+        {
+            printf(" => ");
+        }
     }
 
-    printf("\n");
+    printf("%s\n", RESET);
 }

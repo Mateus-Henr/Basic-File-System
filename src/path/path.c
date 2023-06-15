@@ -10,11 +10,16 @@
 long getEntryPathSize(char *entryPath)
 {
     long size = 1;
-    long pathSize = (long) strlen(entryPath);
+    long entryPathLength = (long) strlen(entryPath);
 
-    for (long i = 1; i < pathSize; i++)
+    if (entryPathLength == 1 && entryPath[0] == DELIMITER[0])
     {
-        if (entryPath[i] == DELIMITER[0] && (i + 1) != pathSize)
+        return 0;
+    }
+
+    for (long i = 1; i < entryPathLength; i++)
+    {
+        if (entryPath[i] == DELIMITER[0] && entryPath[entryPathLength - 1] != DELIMITER[0])
         {
             size++;
         }
@@ -34,6 +39,13 @@ Path *initializePath(char *entryPath)
     }
 
     path->size = getEntryPathSize(entryPath);
+
+    if (path->size == 0)
+    {
+        printf(INVALID_ENTRY_PATH, entryPath);
+        return NULL;
+    }
+
     path->entryNames = (char **) malloc(path->size * sizeof(char *));
 
     if (!path->entryNames)
