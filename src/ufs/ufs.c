@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "string.h"
 
 #include "ufs.h"
 #include "../miscelaneous/error.h"
@@ -163,10 +162,28 @@ bool deleteEntry(UFS *ufs, Path *entryPath)
 
 }
 
+void traverseDirectory(UFS *ufs, Directory *directory, long inodeId)
+{
+    INode *inode = ufs->iNodes[inodeId];
+
+    if (inode->entryContent.entryType != DIRECTORY)
+    {
+        printf("%s\n", inode->entryName);
+        return;
+    }
+
+    Node *current = inode->entryContent.directory.entries.head;
+
+    while (current != NULL)
+    {
+        traverseDirectory(ufs, directory, current->iNodeId);
+        current = current->nextNode;
+    }
+
+    printf("\n");
+}
+
 void displayEntry(UFS *ufs, Path *entryPath)
 {
-    for (long i = 0; i < ufs->iNodeCount; i++)
-    {
-        displayINode(ufs->iNodes[i]);
-    }
+    traverseDirectory(ufs, &ufs->iNodes[ROOT_INODE]->entryContent.directory, ROOT_INODE);
 }

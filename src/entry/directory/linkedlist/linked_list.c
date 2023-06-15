@@ -14,7 +14,7 @@ void initializeLinkedList(LinkedList *linkedList)
 
 bool insertNode(LinkedList *linkedList, long iNodeId, char *entryName)
 {
-    Node *newNode = (Node *) malloc(sizeof(Node *));
+    Node *newNode = (Node *) malloc(sizeof(Node));
 
     if (!newNode)
     {
