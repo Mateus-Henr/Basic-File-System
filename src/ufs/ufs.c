@@ -162,28 +162,73 @@ bool deleteEntry(UFS *ufs, Path *entryPath)
 
 }
 
-void traverseDirectory(UFS *ufs, Directory *directory, long inodeId)
+void traverseDirectory(UFS *ufs, Directory *directory, long inodeId, int level)
 {
     INode *inode = ufs->iNodes[inodeId];
 
     if (inode->entryContent.entryType != DIRECTORY)
     {
-        printf("%s\n", inode->entryName);
         return;
     }
 
     Node *current = inode->entryContent.directory.entries.head;
 
-    while (current != NULL)
+    while (current)
     {
-        traverseDirectory(ufs, directory, current->iNodeId);
+        for (int i = 0; i < level; i++)
+        {
+            printf("  |");
+
+            if (i == level - 1)
+            {
+                printf("-- ");
+            }
+            else
+            {
+                printf("   ");
+            }
+        }
+
+        printf("%s\n", current->entryName);
+
+        traverseDirectory(ufs, directory, current->iNodeId, level + 1);
         current = current->nextNode;
     }
-
-    printf("\n");
 }
 
 void displayEntry(UFS *ufs, Path *entryPath)
 {
-    traverseDirectory(ufs, &ufs->iNodes[ROOT_INODE]->entryContent.directory, ROOT_INODE);
+    if (entryPath->size == 1 && entryPath->entryNames[0][0] == '.')
+    {
+        printf("\n.\n"); // Root directory
+        traverseDirectory(ufs, &ufs->iNodes[ROOT_INODE]->entryContent.directory, ROOT_INODE, 1);
+        return;
+    }
+
+    INode *parentINode = findParentINode(ufs, entryPath);
+
+    if (!parentINode)
+    {
+        return;
+    }
+
+    int idFound = findINodeIdInDirectory(&parentINode->entryContent.directory,
+                                         entryPath->entryNames[entryPath->size - 1]);
+
+    if (idFound == -1)
+    {
+        printf(INODE_NOT_FOUND, entryPath->entryNames[entryPath->size - 1]);
+        return;
+    }
+
+    if (ufs->iNodes[idFound]->entryContent.entryType == ARCHIVE)
+    {
+        printf("\n%s\n", entryPath->entryNames[entryPath->size - 1]);
+    }
+    else
+    {
+        printf("\n%s\n", entryPath->entryNames[0]);
+    }
+
+    traverseDirectory(ufs, &ufs->iNodes[idFound]->entryContent.directory, idFound, 1);
 }
