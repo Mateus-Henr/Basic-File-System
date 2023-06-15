@@ -43,19 +43,21 @@ Command *initializeCommand(char *commandLine)
         exit(EXIT_FAILURE);
     }
 
+    command->hasOption = false;
+
     if (isThereAnyOptions(commandLine))
     {
-        command->options = strdup(strtok(NULL, " -"));
+        char *option = strtok(NULL, " ");
 
-        if (!command->options)
+        if (strcmp(command->command, LS) == 0 && strcmp(option, "-l") == 0)
         {
-            printf(ALLOCATION_ERROR, "Command's options");
-            exit(EXIT_FAILURE);
+            command->hasOption = true;
         }
-    }
-    else
-    {
-        command->options = NULL;
+
+        if (strcmp(command->command, RM) == 0 && strcmp(option, "-r") == 0)
+        {
+            command->hasOption = true;
+        }
     }
 
     char *pathString = strdup(strtok(NULL, " "));
@@ -122,6 +124,12 @@ void commandSwitch(UFS *ufs, Command *command)
     }
     else if (strcmp(command->command, LS) == 0)
     {
+        if (command->hasOption)
+        {
+            displayMetadata(ufs, command->path);
+            return;
+        }
+
         displayEntry(ufs, command->path);
     }
     else
@@ -137,11 +145,6 @@ void freeCommand(Command *command)
         if (command->command)
         {
             free(command->command);
-        }
-
-        if (command->options)
-        {
-            free(command->options);
         }
 
         freePath(command->path);

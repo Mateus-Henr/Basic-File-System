@@ -155,6 +155,7 @@ bool renameEntry(UFS *ufs, Path *entryPath, char *newEntryName)
 
 bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath, enum EntryType entryType)
 {
+
 }
 
 bool deleteEntry(UFS *ufs, Path *entryPath)
@@ -258,4 +259,25 @@ void displayFile(UFS *ufs, Path *entryPath)
     }
 
     displayFileContent(&ufs->iNodes[idFound]->entryContent.file);
+}
+
+void displayMetadata(UFS *ufs, Path *entryPath)
+{
+    INode *parentINode = findParentINode(ufs, entryPath);
+
+    if (!parentINode)
+    {
+        return;
+    }
+
+    int idFound = findINodeIdInDirectory(&parentINode->entryContent.directory,
+                                         entryPath->entryNames[entryPath->size - 1]);
+
+    if (idFound == -1)
+    {
+        printf(INODE_NOT_FOUND, entryPath->entryNames[entryPath->size - 1]);
+        return;
+    }
+
+    displayEntryMetadata(&ufs->iNodes[idFound]->entryMetadata);
 }

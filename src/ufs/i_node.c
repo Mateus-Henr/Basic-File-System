@@ -57,9 +57,7 @@ bool changeINodeEntryName(INode *iNode, char *newName)
 
 void displayINode(INode *iNode)
 {
-    printf("\nID: %ld\nName: %s", iNode->id, iNode->entryName);
     displayEntryMetadata(&iNode->entryMetadata);
-    displayEntryContent(&iNode->entryContent);
 }
 
 void freeINode(INode *iNode)

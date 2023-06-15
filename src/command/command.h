@@ -6,7 +6,7 @@
 typedef struct Command
 {
     char *command;
-    char *options;
+    bool hasOption;
     Path *path;
     Path *secondPath;
 } Command;
