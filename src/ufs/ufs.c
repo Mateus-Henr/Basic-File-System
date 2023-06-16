@@ -167,7 +167,23 @@ bool renameEntry(UFS *ufs, Path *entryPath, char *newEntryName)
 
 bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
 {
-    if(entryPath->size == newEntryPath->size)
+    /* aki eh pra pegar os tipos de cada entry, importante pra ver se no move vai continuar com o msm nome ou se vai trocar
+
+    diretorio e diretorio -> move o primeiro diretorio para dentro do segundo diretorio; caso o segundo diretorio nao exisir, move o primeiro diretorio para o diretorio onde o segundo diretorio inexistente deveria estar, e passa a ter o nome desse diretorio inexistente; caso o diretorio onde o diretorio inexistente deveria estar nao existir, retorna erro
+    arquivo e diretorio -> move o arquivo para o diretorio; caso o diretorio nao existir, retorna erro
+    arquivo e arquivo -> retorna erro; caso o segundo arquivo nao existir, move o primeiro arquivo para o diretorio onde o segundo arquivo inexistente deveria estar, e passa a ter o nome desse arquivo inexistente; caso o diretorio onde o arquivo inexistente deveria estar nao existir, retorna erro
+    diretorio e arquivo -> retorna erro
+    qualquer caso onde o primeiro nao existir -> retorna erro
+    quando os dois diretorios ou arquivos estiverem no msm diretorio, renomear o arquivo/diretorio
+
+    INode *parentINode = findParentINode(ufs, entryPath);
+    INode *newParentINode = findParentINode(ufs, newEntryPath);
+
+    para o tipo do newParentINode, tem q ver o q fazer qnd esse path nao existir, mas ainda for um comando valido, como comentado acima
+    */
+
+    // confere se o move eh para o msm diretorio, se for, chama o renameEntry
+    if(entryPath->size == newEntryPath->size)// && findINodeIdInDirectory() == newEntryType) essa segunda condicao eh pra ver se os dois paths sao pra arquivos
     {
         for(int i = 0; i < entryPath->size - 1; i++)
         {
@@ -176,12 +192,20 @@ bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
                 break;
             }
 
-            if(i == entryPath->size - 2)
+            if(i == entryPath->size - 2 && strcmp(entryPath->entryNames[i], newEntryPath->entryNames[i]) == 0)
             {
                 return renameEntry(ufs, entryPath, newEntryPath->entryNames[newEntryPath->size - 1]);
             }
         }
     }
+
+    /*
+    tentavita de move usando delete e create entry, mas provavelmente tem q conferir muito mais coisa ainda
+    if(deleteEntry(ufs, entryPath))
+    {
+        return createEntry(ufs, newEntryPath, newEntryType)
+    }
+    */
 }
 
 bool deleteEntry(UFS *ufs, Path *entryPath)
