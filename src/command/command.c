@@ -8,6 +8,7 @@
 #define TOUCH "touch"
 #define RM "rm"
 #define MV "mv"
+#define TREE "tree"
 #define CAT "cat"
 #define LS "ls"
 
@@ -136,6 +137,10 @@ void commandSwitch(UFS *ufs, Command *command)
         }
 
         displayEntry(ufs, command->path);
+    }
+    else if (strcmp(command->command, TREE) == 0)
+    {
+        displayEntryHierarchy(ufs, command->path);
     }
     else
     {

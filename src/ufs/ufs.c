@@ -99,8 +99,8 @@ bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType)
         return false;
     }
 
-    int idFound = findINodeIdInDirectory(&parentINode->entryContent.directory,
-                                         entryPath->entryNames[entryPath->size - 1]);
+    long idFound = findINodeIdInDirectory(&parentINode->entryContent.directory,
+                                          entryPath->entryNames[entryPath->size - 1]);
 
     // Check if entry already exists.
     if (idFound != -1)
@@ -141,8 +141,8 @@ bool renameEntry(UFS *ufs, Path *entryPath, char *newEntryName)
         return false;
     }
 
-    int idFound = findINodeIdInDirectory(&parentINode->entryContent.directory,
-                                         entryPath->entryNames[entryPath->size - 1]);
+    long idFound = findINodeIdInDirectory(&parentINode->entryContent.directory,
+                                          entryPath->entryNames[entryPath->size - 1]);
 
     if (idFound == -1)
     {
@@ -164,7 +164,7 @@ bool renameEntry(UFS *ufs, Path *entryPath, char *newEntryName)
     return changeINodeEntryName(ufs->iNodes[idFound], newEntryName);
 }
 
-bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath, enum EntryType entryType)
+bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
 {
 
 }
@@ -172,6 +172,68 @@ bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath, enum EntryType ent
 bool deleteEntry(UFS *ufs, Path *entryPath)
 {
 
+}
+
+void displayEntry(UFS *ufs, Path *entryPath)
+{
+    if (entryPath->size == 1 && entryPath->entryNames[0][0] == '.')
+    {
+        Node *current = ufs->iNodes[0]->entryContent.directory.entries.head;
+
+        while (current)
+        {
+            if (ufs->iNodes[current->iNodeId]->entryContent.entryType == DIRECTORY)
+            {
+                printf("%s%s%s\n", CYAN, current->entryName, RESET);
+            }
+            else
+            {
+                printf("%s\n", current->entryName);
+            }
+
+            current = current->nextNode;
+        }
+
+        return;
+    }
+
+    INode *parentINode = findParentINode(ufs, entryPath);
+
+    if (!parentINode)
+    {
+        return;
+    }
+
+    long idFound = findINodeIdInDirectory(&parentINode->entryContent.directory,
+                                          entryPath->entryNames[entryPath->size - 1]);
+
+    if (idFound == -1)
+    {
+        printf(INODE_NOT_FOUND, entryPath->entryNames[entryPath->size - 1]);
+        return;
+    }
+
+    if (ufs->iNodes[idFound]->entryContent.entryType == ARCHIVE)
+    {
+        printf("\n%s\n", ufs->iNodes[idFound]->entryName);
+        return;
+    }
+
+    Node *current = ufs->iNodes[idFound]->entryContent.directory.entries.head;
+
+    while (current)
+    {
+        if (ufs->iNodes[current->iNodeId]->entryContent.entryType == DIRECTORY)
+        {
+            printf("%s%s%s\n", CYAN, current->entryName, RESET);
+        }
+        else
+        {
+            printf("%s\n", current->entryName);
+        }
+
+        current = current->nextNode;
+    }
 }
 
 void traverseDirectory(UFS *ufs, Directory *directory, long inodeId, int level)
@@ -208,7 +270,7 @@ void traverseDirectory(UFS *ufs, Directory *directory, long inodeId, int level)
     }
 }
 
-void displayEntry(UFS *ufs, Path *entryPath)
+void displayEntryHierarchy(UFS *ufs, Path *entryPath)
 {
     if (entryPath->size == 1 && entryPath->entryNames[0][0] == '.')
     {
@@ -224,8 +286,8 @@ void displayEntry(UFS *ufs, Path *entryPath)
         return;
     }
 
-    int idFound = findINodeIdInDirectory(&parentINode->entryContent.directory,
-                                         entryPath->entryNames[entryPath->size - 1]);
+    long idFound = findINodeIdInDirectory(&parentINode->entryContent.directory,
+                                          entryPath->entryNames[entryPath->size - 1]);
 
     if (idFound == -1)
     {
@@ -254,8 +316,8 @@ void displayFile(UFS *ufs, Path *entryPath)
         return;
     }
 
-    int idFound = findINodeIdInDirectory(&parentINode->entryContent.directory,
-                                         entryPath->entryNames[entryPath->size - 1]);
+    long idFound = findINodeIdInDirectory(&parentINode->entryContent.directory,
+                                          entryPath->entryNames[entryPath->size - 1]);
 
     if (idFound == -1)
     {
@@ -281,8 +343,8 @@ void displayMetadata(UFS *ufs, Path *entryPath)
         return;
     }
 
-    int idFound = findINodeIdInDirectory(&parentINode->entryContent.directory,
-                                         entryPath->entryNames[entryPath->size - 1]);
+    long idFound = findINodeIdInDirectory(&parentINode->entryContent.directory,
+                                          entryPath->entryNames[entryPath->size - 1]);
 
     if (idFound == -1)
     {

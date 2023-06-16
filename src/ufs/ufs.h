@@ -20,11 +20,13 @@ bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType);
 
 bool renameEntry(UFS *ufs, Path *entryPath, char *newEntryName);
 
-bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath, enum EntryType entryType);
+bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath);
 
 bool deleteEntry(UFS *ufs, Path *entryPath);
 
 void displayEntry(UFS *ufs, Path *entryPath);
+
+void displayEntryHierarchy(UFS *ufs, Path *entryPath);
 
 void displayFile(UFS *ufs, Path *entryPath);
 
