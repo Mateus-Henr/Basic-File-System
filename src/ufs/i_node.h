@@ -14,7 +14,7 @@ typedef struct INode
 
 INode *initializeINode(long id, char *entryName, enum EntryType entryType);
 
-bool changeINodeEntryName(INode *iNode, char *newName);
+bool changeINodeEntryName(INode *iNode, char *newEntryName);
 
 void displayINode(INode *iNode);
 

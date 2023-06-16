@@ -23,7 +23,7 @@ bool insertNode(LinkedList *linkedList, long iNodeId, char *entryName)
     }
 
     newNode->iNodeId = iNodeId;
-    newNode->entryName = entryName;
+    newNode->entryName = strdup(entryName);
     newNode->nextNode = NULL;
 
     if (!linkedList->head)
@@ -66,12 +66,20 @@ bool changeNodeName(LinkedList *linkedList, char *entryName, char *newEntryName)
     {
         if (strcmp(currNode->entryName, entryName) == 0)
         {
+            char *newName = strdup(newEntryName);
+
+            if (!newName)
+            {
+                printf(ERROR_RENAME);
+                return false;
+            }
+
             if (currNode->entryName)
             {
                 free(currNode->entryName);
             }
 
-            return currNode->entryName = newEntryName;
+            return currNode->entryName = newName;
         }
 
         currNode = currNode->nextNode;

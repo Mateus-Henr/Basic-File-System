@@ -31,9 +31,9 @@ INode *initializeINode(long id, char *entryName, enum EntryType entryType)
     return iNode;
 }
 
-bool changeINodeEntryName(INode *iNode, char *newName)
+bool changeINodeEntryName(INode *iNode, char *newEntryName)
 {
-    newName = strdup(newName);
+    char *newName = strdup(newEntryName);
 
     if (!newName)
     {
@@ -41,18 +41,12 @@ bool changeINodeEntryName(INode *iNode, char *newName)
         return false;
     }
 
-    bool status = changeEntryNameInDirectory(&iNode->entryContent.directory,
-                                             iNode->entryName,
-                                             newName);
-
     if (iNode->entryName)
     {
         free(iNode->entryName);
     }
 
-    iNode->entryName = newName;
-
-    return status;
+    return iNode->entryName = newName;
 }
 
 void displayINode(INode *iNode)

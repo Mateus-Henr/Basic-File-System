@@ -150,6 +150,17 @@ bool renameEntry(UFS *ufs, Path *entryPath, char *newEntryName)
         return false;
     }
 
+    if (findINodeIdInDirectory(&parentINode->entryContent.directory,
+                               newEntryName) != -1)
+    {
+        printf(NAME_EXISTS, newEntryName);
+        return false;
+    }
+
+    changeEntryNameInDirectory(&parentINode->entryContent.directory,
+                               entryPath->entryNames[entryPath->size - 1],
+                               newEntryName);
+
     return changeINodeEntryName(ufs->iNodes[idFound], newEntryName);
 }
 
