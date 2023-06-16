@@ -25,5 +25,6 @@
 #define INPUT_ERROR "%s\nERROR: Failed to read input.\033[0m\n", RED
 #define FILE_IS_DIRECTORY "%s\nERROR: '%s' is a directory.\033[0m\n", RED
 #define NAME_EXISTS "%s\nERROR: Entry with name '%s' already exists.\033[0m\n", RED
+#define INVALID_OPTION "%s\nERROR: Invalid option(s).\033[0m\n", RED
 
 #endif //BASIC_FILE_SYSTEM_ERROR_H

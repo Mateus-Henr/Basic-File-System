@@ -44,29 +44,51 @@ Command *initializeCommand(char *commandLine)
         exit(EXIT_FAILURE);
     }
 
-    command->hasOption = false;
-
     if (isThereAnyOptions(commandLine))
     {
         char *option = strtok(NULL, " ");
 
-        if (strcmp(command->command, LS) == 0 && strcmp(option, "-l") == 0)
+        if (strcmp(command->command, LS) == 0 && strcmp(option, "-l") == 0 ||
+            strcmp(command->command, RM) == 0 && strcmp(option, "-r") == 0)
         {
             command->hasOption = true;
         }
-
-        if (strcmp(command->command, RM) == 0 && strcmp(option, "-r") == 0)
+        else
         {
-            command->hasOption = true;
+            printf(INVALID_OPTION);
+            return NULL;
         }
     }
-
-    char *pathString = strdup(strtok(NULL, " "));
-
-    if (!pathString)
+    else
     {
-        printf(INVALID_COMMAND, commandLine);
-        return NULL;
+        command->hasOption = false;
+    }
+
+    char *pathString = strtok(NULL, " ");
+
+    // Commands that can have no path.
+    if (strcmp(command->command, LS) == 0 || strcmp(command->command, TREE) == 0)
+    {
+        if (!pathString)
+        {
+            pathString = strdup(".");
+        }
+        else
+        {
+            pathString = strdup(pathString);
+        }
+    }
+    else
+    {
+        if (!pathString)
+        {
+            printf(INVALID_COMMAND, commandLine);
+            return NULL;
+        }
+        else
+        {
+            pathString = strdup(pathString);
+        }
     }
 
     char *secondPathString = strtok(NULL, " ");

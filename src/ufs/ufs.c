@@ -179,16 +179,17 @@ bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
     */
 
     // confere se o move eh para o msm diretorio, se for, chama o renameEntry
-    if(entryPath->size == newEntryPath->size)// && findINodeIdInDirectory() == newEntryType) essa segunda condicao eh pra ver se os dois paths sao pra arquivos
+    if (entryPath->size ==
+        newEntryPath->size)// && findINodeIdInDirectory() == newEntryType) essa segunda condicao eh pra ver se os dois paths sao pra arquivos
     {
-        for(int i = 0; i < entryPath->size - 1; i++)
+        for (int i = 0; i < entryPath->size - 1; i++)
         {
-            if(strcmp(entryPath->entryNames[i], newEntryPath->entryNames[i]) != 0)
+            if (strcmp(entryPath->entryNames[i], newEntryPath->entryNames[i]) != 0)
             {
                 break;
             }
 
-            if(i == entryPath->size - 2 && strcmp(entryPath->entryNames[i], newEntryPath->entryNames[i]) == 0)
+            if (i == entryPath->size - 2 && strcmp(entryPath->entryNames[i], newEntryPath->entryNames[i]) == 0)
             {
                 return renameEntry(ufs, entryPath, newEntryPath->entryNames[newEntryPath->size - 1]);
             }
