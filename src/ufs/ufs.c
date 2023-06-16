@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "ufs.h"
 #include "../miscelaneous/error.h"
@@ -166,7 +167,21 @@ bool renameEntry(UFS *ufs, Path *entryPath, char *newEntryName)
 
 bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
 {
+    if(entryPath->size == newEntryPath->size)
+    {
+        for(int i = 0; i < entryPath->size - 1; i++)
+        {
+            if(strcmp(entryPath->entryNames[i], newEntryPath->entryNames[i]) != 0)
+            {
+                break;
+            }
 
+            if(i == entryPath->size - 2)
+            {
+                return renameEntry(ufs, entryPath, newEntryPath->entryNames[newEntryPath->size - 1]);
+            }
+        }
+    }
 }
 
 bool deleteEntry(UFS *ufs, Path *entryPath)

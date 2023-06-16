@@ -118,7 +118,7 @@ void commandSwitch(UFS *ufs, Command *command)
     }
     else if (strcmp(command->command, MV) == 0)
     {
-        renameEntry(ufs, command->path, command->secondPath->entryNames[command->secondPath->size - 1]);
+        moveEntry(ufs, command->path, command->secondPath);
     }
     else if (strcmp(command->command, RM) == 0)
     {
