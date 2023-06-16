@@ -1,7 +1,6 @@
 #ifndef BASIC_FILE_SYSTEM_ENTRY_METADATA_H
 #define BASIC_FILE_SYSTEM_ENTRY_METADATA_H
 
-#include <crtdefs.h>
 #include <sys/types.h>
 #include "timestamps.h"
 

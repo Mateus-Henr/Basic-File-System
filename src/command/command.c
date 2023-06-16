@@ -68,7 +68,12 @@ Command *initializeCommand(char *commandLine)
         return NULL;
     }
 
-    char *secondPathString = strdup(strtok(NULL, " "));
+    char *secondPathString = strtok(NULL, " ");
+
+    if (secondPathString)
+    {
+        secondPathString = strdup(secondPathString);
+    }
 
     command->path = initializePath(pathString);
 
