@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include "linkedlist/linked_list.h"
+#include "../entry_header.h"
 
 typedef struct Directory
 {
@@ -11,11 +12,9 @@ typedef struct Directory
 
 void initializeDirectory(Directory *directory);
 
-bool addEntry(Directory *directory, long iNodeId, char *entryName);
+bool addEntry(Directory *directory, EntryHeader *entryHeader);
 
 long findINodeIdInDirectory(Directory *directory, char *entryName);
-
-bool changeEntryNameInDirectory(Directory *directory, char *entryName, char *newEntryName);
 
 bool removeEntry(Directory *directory, char *entryName);
 

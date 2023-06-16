@@ -12,7 +12,7 @@ void initializeLinkedList(LinkedList *linkedList)
     linkedList->nodeCount = 0;
 }
 
-bool insertNode(LinkedList *linkedList, long iNodeId, char *entryName)
+bool insertNode(LinkedList *linkedList, EntryHeader *entryHeader)
 {
     Node *newNode = (Node *) malloc(sizeof(Node));
 
@@ -22,8 +22,7 @@ bool insertNode(LinkedList *linkedList, long iNodeId, char *entryName)
         exit(EXIT_FAILURE);
     }
 
-    newNode->iNodeId = iNodeId;
-    newNode->entryName = strdup(entryName);
+    newNode->entryHeader = entryHeader;
     newNode->nextNode = NULL;
 
     if (!linkedList->head)
@@ -47,45 +46,15 @@ long getINodeNumber(LinkedList *linkedList, char *entryName)
 
     while (currNode)
     {
-        if (strcmp(currNode->entryName, entryName) == 0)
+        if (strcmp(currNode->entryHeader->name, entryName) == 0)
         {
-            return currNode->iNodeId;
+            return currNode->entryHeader->id;
         }
 
         currNode = currNode->nextNode;
     }
 
     return -1;
-}
-
-bool changeNodeName(LinkedList *linkedList, char *entryName, char *newEntryName)
-{
-    Node *currNode = linkedList->head;
-
-    while (currNode)
-    {
-        if (strcmp(currNode->entryName, entryName) == 0)
-        {
-            char *newName = strdup(newEntryName);
-
-            if (!newName)
-            {
-                printf(ERROR_RENAME);
-                return false;
-            }
-
-            if (currNode->entryName)
-            {
-                free(currNode->entryName);
-            }
-
-            return currNode->entryName = newName;
-        }
-
-        currNode = currNode->nextNode;
-    }
-
-    return false;
 }
 
 bool removeNode(LinkedList *linkedList, char *entryName)
@@ -100,7 +69,7 @@ bool removeNode(LinkedList *linkedList, char *entryName)
 
     while (currNode)
     {
-        if (strcmp(currNode->entryName, entryName) == 0)
+        if (strcmp(currNode->entryHeader->name, entryName) == 0)
         {
             if (!prevNode)
             {
@@ -135,10 +104,10 @@ void displayLinkedList(LinkedList *linkedList)
         printf("%s|%s %ld %s%s - %s |",
                CYAN,
                ORANGE,
-               currNode->iNodeId,
+               currNode->entryHeader->id,
                RESET,
                CYAN,
-               currNode->entryName);
+               currNode->entryHeader->name);
 
         currNode = currNode->nextNode;
 

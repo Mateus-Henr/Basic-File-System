@@ -16,17 +16,9 @@ INode *initializeINode(long id, char *entryName, enum EntryType entryType)
         exit(EXIT_FAILURE);
     }
 
-    iNode->id = id;
-    iNode->entryName = strdup(entryName);
-    initializeEntryMetadata(&iNode->entryMetadata, 10, 1);
-    initializeEntryContent(&iNode->entryContent, entryType);
-
-    if (!iNode->entryName)
-    {
-        printf(ALLOCATION_ERROR, "INode Entry Name");
-        free(iNode);
-        exit(EXIT_FAILURE);
-    }
+    iNode->header = initializeEntryHeader(id, entryName);
+    initializeEntryMetadata(&iNode->metadata, 10, 1);
+    initializeEntryContent(&iNode->content, entryType);
 
     return iNode;
 }
@@ -41,28 +33,24 @@ bool changeINodeEntryName(INode *iNode, char *newEntryName)
         return false;
     }
 
-    if (iNode->entryName)
+    if (iNode->header->name)
     {
-        free(iNode->entryName);
+        free(iNode->header->name);
     }
 
-    return iNode->entryName = newName;
+    return iNode->header->name = newName;
 }
 
 void displayINode(INode *iNode)
 {
-    displayEntryMetadata(&iNode->entryMetadata);
+    displayEntryMetadata(&iNode->metadata);
 }
 
 void freeINode(INode *iNode)
 {
     if (iNode)
     {
-        if (iNode->entryName)
-        {
-            free(iNode->entryName);
-        }
-
+        freeEntryHeader(iNode->header);
         free(iNode);
     }
 }

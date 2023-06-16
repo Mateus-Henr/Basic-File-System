@@ -5,19 +5,14 @@ void initializeDirectory(Directory *directory)
     initializeLinkedList(&directory->entries);
 }
 
-bool addEntry(Directory *directory, long iNodeId, char *entryName)
+bool addEntry(Directory *directory, EntryHeader *entryHeader)
 {
-    return insertNode(&directory->entries, iNodeId, entryName);
+    return insertNode(&directory->entries, entryHeader);
 }
 
 long findINodeIdInDirectory(Directory *directory, char *entryName)
 {
     return getINodeNumber(&directory->entries, entryName);
-}
-
-bool changeEntryNameInDirectory(Directory *directory, char *entryName, char *newEntryName)
-{
-    return changeNodeName(&directory->entries, entryName, newEntryName);
 }
 
 bool removeEntry(Directory *directory, char *entryName)

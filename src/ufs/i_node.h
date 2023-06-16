@@ -6,10 +6,9 @@
 
 typedef struct INode
 {
-    long id;
-    char *entryName;
-    EntryMetadata entryMetadata;
-    EntryContent entryContent;
+    EntryHeader *header;
+    EntryMetadata metadata;
+    EntryContent content;
 } INode;
 
 INode *initializeINode(long id, char *entryName, enum EntryType entryType);
