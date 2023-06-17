@@ -218,6 +218,7 @@ bool deleteEntry(UFS *ufs, Path *entryPath)
     }
 
     //verificar se está vazio;
+    displayEntryHierarchy(ufs, entryPath);
     if(parentINode->content.directory.entries.head == NULL && parentINode->content.directory.entries.tail == NULL) {
         //usa a função de "directory.h", a qual chama função da lista encadeada e dá free
         removeEntry(&parentINode->content.directory, entryPath->entryNames[entryPath->size - 1]);
