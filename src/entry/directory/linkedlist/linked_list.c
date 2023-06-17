@@ -54,18 +54,29 @@ bool removeNode(LinkedList *linkedList, char *entryName)
     {
         if (strcmp(currNode->entryHeader->name, entryName) == 0)
         {
+            if (linkedList->nodeCount == 1)
+            {
+                linkedList->head = NULL;
+                linkedList->tail = NULL;
+            }
+
+            if (!currNode->nextNode)
+            {
+                linkedList->tail = prevNode;
+            }
+
             if (!prevNode)
             {
-                linkedList->head = linkedList->head->nextNode;
+                linkedList->head = currNode->nextNode;
             }
             else
             {
                 prevNode->nextNode = currNode->nextNode;
             }
 
-            free(currNode);
             linkedList->nodeCount--;
 
+            free(currNode);
             return true;
         }
 
