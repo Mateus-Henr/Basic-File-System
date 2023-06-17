@@ -14,6 +14,8 @@ void initializeDirectory(Directory *directory);
 
 bool addEntry(Directory *directory, EntryHeader *entryHeader);
 
+bool transferEntry(Directory *newDirectory, Directory *oldDirectory, EntryHeader *entryHeader);
+
 long findINodeIdInDirectory(Directory *directory, char *entryName);
 
 bool removeEntry(Directory *directory, char *entryName);

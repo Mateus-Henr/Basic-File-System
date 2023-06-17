@@ -40,23 +40,6 @@ bool insertNode(LinkedList *linkedList, EntryHeader *entryHeader)
     return true;
 }
 
-long getINodeNumber(LinkedList *linkedList, char *entryName)
-{
-    Node *currNode = linkedList->head;
-
-    while (currNode)
-    {
-        if (strcmp(currNode->entryHeader->name, entryName) == 0)
-        {
-            return currNode->entryHeader->id;
-        }
-
-        currNode = currNode->nextNode;
-    }
-
-    return -1;
-}
-
 bool removeNode(LinkedList *linkedList, char *entryName)
 {
     Node *currNode = linkedList->head;
@@ -91,6 +74,46 @@ bool removeNode(LinkedList *linkedList, char *entryName)
     }
 
     return false;
+}
+
+/*
+bool transferNode(LinkedList *newLinkedList, LinkedList *oldLinkedList, EntryHeader *entryHeader)
+{
+    //removeNode();
+
+    currNode->nextNode = NULL;
+
+    if (!newLinkedList->head)
+    {
+        newLinkedList->head = newLinkedList->tail = currNode;
+    }
+    else
+    {
+        newLinkedList->tail->nextNode = currNode;
+        newLinkedList->tail = currNode;
+    }
+
+    newLinkedList->nodeCount++;
+
+    return true;
+}
+*/
+
+long getINodeNumber(LinkedList *linkedList, char *entryName)
+{
+    Node *currNode = linkedList->head;
+
+    while (currNode)
+    {
+        if (strcmp(currNode->entryHeader->name, entryName) == 0)
+        {
+            return currNode->entryHeader->id;
+        }
+
+        currNode = currNode->nextNode;
+    }
+
+    return -1;
 }
 
 void displayLinkedList(LinkedList *linkedList)

@@ -166,8 +166,14 @@ bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
     INode *parentINode = findParentINode(ufs, entryPath);
     INode *newParentINode = findParentINode(ufs, newEntryPath);
 
+    char *entryName = entryPath->entryNames[entryPath->size - 1];
+    char *newEntryName = newEntryPath->entryNames[newEntryPath->size - 1];
+
+    Directory *entryDirectory = &parentINode->content.directory;
+    Directory *newEntryDirectory = &newParentINode->content.directory;
+
     // caso os paths sejam iguais, retorna erro
-    if(findINodeIdInDirectory(&parentINode->content.directory, entryPath->entryNames[entryPath->size - 1]) == findINodeIdInDirectory(&newParentINode->content.directory, newEntryPath->entryNames[newEntryPath->size - 1]))
+    if(findINodeIdInDirectory(entryDirectory, entryName) == findINodeIdInDirectory(newEntryDirectory, newEntryName))
     {
         // falta escrever a mensagem de erro
         return false;
@@ -195,42 +201,32 @@ bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
         }
     }
 
-    INode *iNode = ufs->iNodes[findINodeIdInDirectory(&parentINode->content.directory, entryPath->entryNames[entryPath->size - 1])];
+    INode *iNode = ufs->iNodes[findINodeIdInDirectory(entryDirectory, entryName)];
     
     // segundo path nao existe(nao tem problema)
-    if(findINodeIdInDirectory(&newParentINode->content.directory, newEntryPath->entryNames[newEntryPath->size - 1]) == -1)
+    if(findINodeIdInDirectory(newEntryDirectory, newEntryName) == -1)
     {
         // caso o segundo path nao exista e esteja no mesmo diretorio do primeiro, chama o rename
         if(parentINode->header->id == newParentINode->header->id)
         {
-            return renameEntry(ufs, entryPath, newEntryPath->entryNames[newEntryPath->size - 1]);
+            return renameEntry(ufs, entryPath, newEntryName);
         }
-        // caso o segundo path nao exista e esteja num diretorio diferente do primeiro, ele eh excluido e eh criado um novo no segundo path
+        // caso o segundo path nao exista e esteja num diretorio diferente do primeiro, ele eh movido e chama o rename
         else
         {
-            if(addEntry(&newParentINode->content.directory, createSingleNode(ufs, newEntryPath->entryNames[newEntryPath->size - 1], iNode->content.entryType)->header))
-            {
-                INode *currINode = ufs->iNodes[findINodeIdInDirectory(&newParentINode->content.directory, newEntryPath->entryNames[newEntryPath->size - 1])];
+            addEntry(newEntryDirectory, iNode->header);
+            removeEntry(entryDirectory, entryName);
+            //transferEntry(entryDirectory, newEntryDirectory, iNode->header);
 
-                if(currINode->content.entryType == DIRECTORY)
-                {
-                    currINode->content = iNode->content;
-                    currINode->header = iNode->header;
-                    currINode->metadata = iNode->metadata;
-                }
-                else if(currINode->content.entryType == ARCHIVE)
-                {
-                    // passar o conteudo do arquivo
-                }
-                return deleteEntry(ufs, entryPath);
-            }
-            else return false;
+            Path *tempEntryPath = newEntryPath;
+            tempEntryPath->entryNames[tempEntryPath->size - 1] = entryName;
+            renameEntry(ufs, tempEntryPath, newEntryName);
         }
     }
     // segundo path existe
     else
     {
-        INode *newINode = ufs->iNodes[findINodeIdInDirectory(&newParentINode->content.directory, newEntryPath->entryNames[newEntryPath->size - 1])];
+        INode *newINode = ufs->iNodes[findINodeIdInDirectory(newEntryDirectory, newEntryName)];
 
         // caso o segundo path exista e for um file, retorna erro
         if(newINode->content.entryType == ARCHIVE)
@@ -238,27 +234,11 @@ bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
             // ainda falta escrever a mensagem de erro
             return false;
         }
-        // caso o segundo path exista e for um diretorio, cria uma nova entry nesse path
+        // caso o segundo path exista e for um diretorio, ele eh movido
         else if(newINode->content.entryType == DIRECTORY)
         {
-            if(addEntry(&newINode->content.directory, createSingleNode(ufs, entryPath->entryNames[entryPath->size - 1], iNode->content.entryType)->header))
-            {
-                INode *currINode = ufs->iNodes[findINodeIdInDirectory(&newINode->content.directory, entryPath->entryNames[entryPath->size - 1])];
-
-                if(currINode->content.entryType == DIRECTORY)
-                {
-                    currINode->content = iNode->content;
-                    currINode->header = iNode->header;
-                    currINode->metadata = iNode->metadata;
-                }
-                else if(currINode->content.entryType == ARCHIVE)
-                {
-                    // passar o conteudo do arquivo
-                }
-
-                return deleteEntry(ufs, entryPath);
-            }
-            else return false;
+            addEntry(newEntryDirectory, iNode->header);
+            removeEntry(entryDirectory, entryName);
         }
     }
 }
