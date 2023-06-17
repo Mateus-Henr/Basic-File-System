@@ -8,6 +8,8 @@ make:
         src/ufs/i_node.h \
         src/path/path.c \
         src/path/path.h \
+        src/entry/entry_header.c \
+        src/entry/entry_header.h \
         src/entry/entry_metadata.c \
         src/entry/entry_metadata.h \
         src/entry/entry_content.c \
