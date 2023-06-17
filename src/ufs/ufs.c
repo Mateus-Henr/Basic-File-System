@@ -133,6 +133,23 @@ bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType)
                     createSingleNode(ufs, entryPath->entryNames[entryPath->size - 1], entryType)->header);
 }
 
+bool checkPathInAnother(Path *entryPath, Path *newEntryPath)
+{
+    if (entryPath->size < newEntryPath->size)
+    {
+        for (int i = 0; (i < entryPath->size && i < newEntryPath->size); i++)
+        {
+            if (strcmp(entryPath->entryNames[i], newEntryPath->entryNames[i]) != 0)
+            {
+                return true;
+            }
+        }
+    }
+    else return true;
+
+    return false;
+}
+
 bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
 {
     INode *parentINode = findParentINode(ufs, entryPath);
@@ -154,27 +171,23 @@ bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
 
     if (foundId == -1)
     {
-        printf("ERROR: File doesn't exist.");
+        printf(FILE_NOT_FOUND, entryName);
         return false;
     }
 
     // caso os paths sejam iguais, retorna erro
     if (foundId == newFoundId)
     {
-        // falta escrever a mensagem de erro
+        if(ufs->iNodes[foundId]->content.entryType == ARCHIVE) printf(MOVE_TO_ARCHIVE, newEntryName);
+        else printf(MOVE_TO_ITSELF, entryName);
         return false;
     }
 
-    // confere se o primeiro path esta dentro do segundo path (transformar em funcao depois)
-    if (entryPath->size < newEntryPath->size)
+    // confere se o primeiro path esta dentro do segundo path
+    if (!checkPathInAnother(entryPath, newEntryPath))
     {
-        for (int i = 1; (i < entryPath->size && i < newEntryPath->size); i++)
-        {
-            if (strcmp(entryPath->entryNames[i], newEntryPath->entryNames[i]) != 0)
-            {
-                return false;
-            }
-        }
+        printf(MOVE_TO_CHILD, entryName);
+        return false;
     }
 
     INode *iNode = ufs->iNodes[foundId];
@@ -185,13 +198,13 @@ bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
         // caso o segundo path nao exista e esteja no mesmo diretorio do primeiro, chama o rename
         if (parentINode->header->id == newParentINode->header->id)
         {
-            return changeINodeEntryName(parentINode, newEntryName);
+            return changeINodeEntryName(iNode, newEntryName);
         }
 
         // caso o segundo path nao exista e esteja num diretorio diferente do primeiro, ele eh movido e chama o rename
         if (removeEntry(entryDirectory, entryName))
         {
-            if (addEntry(&newParentINode->content.directory, iNode->header))
+            if (addEntry(newEntryDirectory, iNode->header))
             {
                 return changeINodeEntryName(iNode, newEntryName);
             }
@@ -206,7 +219,7 @@ bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
     // caso o segundo path exista e for um file, retorna erro
     if (newINode->content.entryType == ARCHIVE)
     {
-        printf(FILE_IS_NOT_DIRECTORY, newINode->header->name);
+        printf(MOVE_TO_ARCHIVE, newEntryName);
         return false;
     }
 
