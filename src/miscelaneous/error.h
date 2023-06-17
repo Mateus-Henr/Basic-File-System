@@ -19,6 +19,9 @@
 #define INODE_NOT_FOUND "%s\nERROR: Couldn't find INode for '%s'.\033[0m\n", RED
 #define MAX_NUMBER_OF_INODES "%s\nERROR: Max number of Inodes has been reached.\033[0m\n", RED
 #define DIRECTORY_EXISTS "%s\nERROR: Directory already exists.\033[0m\n", RED
+#define DIRECTORY_NOT_FOUND "%s\nERROR: Directory does not exist.\033[0m\n", RED
+#define DIRECTORY_IS_NOT_EMPTY "%s\nERROR: Directory is not empty.\033[0m\n", RED
+#define INCONSISTENT_ANSWER "%s\nERROR: Inconsistent answer.\033[0m\n", RED
 #define FILE_EXISTS "%s\nERROR: File already exists.\033[0m\n", RED
 #define FILE_IS_NOT_DIRECTORY "%s\nERROR: Couldn't create entry, '%s' is not a directory.\033[0m\n", RED
 #define ERROR_RENAME "%s\nERROR: Couldn't change entry name.\033[0m\n", RED
