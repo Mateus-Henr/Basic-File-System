@@ -10,12 +10,6 @@ bool addEntry(Directory *directory, EntryHeader *entryHeader)
     return insertNode(&directory->entries, entryHeader);
 }
 
-bool transferEntry(Directory *newDirectory, Directory *oldDirectory, EntryHeader *entryHeader)
-{
-//    return transferNode(&newDirectory->entries, &oldDirectory->entries, entryHeader);
-return true;
-}
-
 long findINodeIdInDirectory(Directory *directory, char *entryName)
 {
     return getINodeNumber(&directory->entries, entryName);

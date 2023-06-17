@@ -76,29 +76,6 @@ bool removeNode(LinkedList *linkedList, char *entryName)
     return false;
 }
 
-/*
-bool transferNode(LinkedList *newLinkedList, LinkedList *oldLinkedList, EntryHeader *entryHeader)
-{
-    //removeNode();
-
-    currNode->nextNode = NULL;
-
-    if (!newLinkedList->head)
-    {
-        newLinkedList->head = newLinkedList->tail = currNode;
-    }
-    else
-    {
-        newLinkedList->tail->nextNode = currNode;
-        newLinkedList->tail = currNode;
-    }
-
-    newLinkedList->nodeCount++;
-
-    return true;
-}
-*/
-
 long getINodeNumber(LinkedList *linkedList, char *entryName)
 {
     Node *currNode = linkedList->head;
