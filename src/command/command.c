@@ -13,6 +13,7 @@
 #define LS "ls"
 
 
+
 bool isThereAnyOptions(char *commandLine)
 {
     for (long i = 0; i < strlen(commandLine); i++)

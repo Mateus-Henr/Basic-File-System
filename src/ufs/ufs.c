@@ -206,6 +206,59 @@ bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
     */
 }
 
+int directoryRemovalAUX(UFS *ufs, Path *entryPath)
+{
+    // Criar um arquivo temporário para redirecionar a saída
+    FILE *tempFile = fopen("temp.txt", "w");
+    if (tempFile == NULL)
+    {
+        printf("Erro ao criar o arquivo temporário.");
+        return false;
+    }
+
+    // Armazenar o valor original do stdout
+    FILE *originalStdout = stdout;
+
+    // Redirecionar a saída para o arquivo temporário
+    stdout = tempFile;
+
+    // Chamar a função displayEntryHierarchy para imprimir no arquivo temporário
+    displayEntryHierarchy(ufs, entryPath);
+
+    // Restaurar o stdout original
+    stdout = originalStdout;
+
+    // Fechar o arquivo temporário
+    fclose(tempFile);
+
+    // Abrir o arquivo temporário para leitura
+    FILE *tempFileRead = fopen("temp.txt", "r");
+    if (tempFileRead == NULL)
+    {
+        printf("Erro ao abrir o arquivo temporário para leitura.");
+        return false;
+    }
+
+    // Contador de tamanho
+    int lineCounter = 0;
+    char ch;
+
+    // Contar o tamanho do arquivo temporário
+    while ((ch = fgetc(tempFileRead)) != EOF)
+    {
+        if(ch == '\n')
+            lineCounter++;
+    }
+
+    // Fechar o arquivo temporário de leitura
+    fclose(tempFileRead);
+
+    // Remover o arquivo temporário
+    remove("temp.txt");
+
+    return lineCounter;
+}
+
 bool deleteEntry(UFS *ufs, Path *entryPath)
 {
     //verificar primeiro se o diretorio existe
@@ -217,9 +270,9 @@ bool deleteEntry(UFS *ufs, Path *entryPath)
         return false;
     }
 
-    //verificar se está vazio;
-    displayEntryHierarchy(ufs, entryPath);
-    if(parentINode->content.directory.entries.head == NULL && parentINode->content.directory.entries.tail == NULL) {
+    int checkDirectory = directoryRemovalAUX(ufs, entryPath) - 1;
+
+    if(checkDirectory == 1) {
         //usa a função de "directory.h", a qual chama função da lista encadeada e dá free
         removeEntry(&parentINode->content.directory, entryPath->entryNames[entryPath->size - 1]);
         return true;
@@ -230,21 +283,21 @@ bool deleteEntry(UFS *ufs, Path *entryPath)
         printf(FORCE_or_STOP); //pergunta se deseja forçar a exclusão (1) ou parar (2)
         int answer_forceStop;
         scanf("%d", &answer_forceStop);
+
         switch (answer_forceStop){
             case 1:
-                //chama a função para excluir cada arquivo presente (com while ou for, não sei ainda, algo assim) -> ainda irei criar função removeFILE aqui em "ufs.h"
-                break;
+                //usa a função de "directory.h", a qual chama função da lista encadeada e dá free
+                removeEntry(&parentINode->content.directory, entryPath->entryNames[entryPath->size -1]);
+                return true;
             case 2:
                 return false; //apenas para essa função e não remove nada
             default:
                 printf(INCONSISTENT_ANSWER);
                 return false; //também para a função e não exclui nada
         }
-        //usa a função de "directory.h", a qual chama função da lista encadeada e dá free
-        removeEntry(&parentINode->content.directory, entryPath->entryNames[entryPath->size -1]);
-        return true;
     }
 }
+
 
 void displayEntry(UFS *ufs, Path *entryPath)
 {

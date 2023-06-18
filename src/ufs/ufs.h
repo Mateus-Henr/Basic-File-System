@@ -22,6 +22,8 @@ bool renameEntry(UFS *ufs, Path *entryPath, char *newEntryName);
 
 bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath);
 
+int directoryRemovalAUX(UFS *ufs, Path *entryPath);
+
 bool deleteEntry(UFS *ufs, Path *entryPath);
 
 void displayEntry(UFS *ufs, Path *entryPath);
