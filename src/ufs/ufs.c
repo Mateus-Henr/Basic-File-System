@@ -224,11 +224,19 @@ bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
     }
 
     // caso o segundo path exista e for um diretorio, ele eh movido
-    if (removeEntry(entryDirectory, entryName))
+    if(findINodeIdInDirectory(&newINode->content.directory, entryName) == -1)
     {
-        return addEntry(&newINode->content.directory, iNode->header);
+        if (removeEntry(entryDirectory, entryName))
+        {
+            return addEntry(&newINode->content.directory, iNode->header);
+        }
     }
-
+    else
+    {
+        printf(NAME_EXISTS_IN_DIRECTORY, entryName, newINode->header->name);
+        return false;
+    }
+    
     return false;
 }
 
