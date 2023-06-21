@@ -243,6 +243,7 @@ bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
 
 int directoryRemovalAUX(UFS *ufs, Path *entryPath)
 {
+    /*
     // Criar um arquivo temporário para redirecionar a saída
     FILE *tempFile = fopen("temp.txt", "w");
     if (tempFile == NULL)
@@ -292,10 +293,12 @@ int directoryRemovalAUX(UFS *ufs, Path *entryPath)
     remove("temp.txt");
 
     return lineCounter;
+    */
 }
 
 bool deleteEntry(UFS *ufs, Path *entryPath)
 {
+
     //verificar primeiro se o diretorio existe
     INode *parentINode = findParentINode(ufs, entryPath);
 
@@ -305,6 +308,21 @@ bool deleteEntry(UFS *ufs, Path *entryPath)
         return false;
     }
 
+    long idFound = findINodeIdInDirectory(&parentINode->content.directory,
+                                          entryPath->entryNames[entryPath->size - 1]);
+
+    if (idFound == -1)
+    {
+        printf(INODE_NOT_FOUND, entryPath->entryNames[entryPath->size - 1]);
+        return false;
+    }
+
+    removeEntry(&parentINode->content.directory, entryPath->entryNames[entryPath->size -1]);
+
+    freeINode(ufs->iNodes[idFound]);
+
+    return true;
+/*
     int checkDirectory = directoryRemovalAUX(ufs, entryPath) - 1;
 
     if(checkDirectory == 1) {
@@ -331,6 +349,7 @@ bool deleteEntry(UFS *ufs, Path *entryPath)
                 return false; //também para a função e não exclui nada
         }
     }
+     */
 }
 
 void displayEntry(UFS *ufs, Path *entryPath)
