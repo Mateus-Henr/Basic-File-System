@@ -29,5 +29,10 @@
 #define FILE_IS_DIRECTORY "%s\nERROR: '%s' is a directory.\033[0m\n", RED
 #define NAME_EXISTS "%s\nERROR: Entry with name '%s' already exists.\033[0m\n", RED
 #define INVALID_OPTION "%s\nERROR: Invalid option(s).\033[0m\n", RED
+#define FILE_NOT_FOUND "%s\nERROR: Couldn't find file '%s'.\033[0m\n", RED
+#define MOVE_TO_ARCHIVE "%s\nERROR: Couldn't move entry, '%s' is not a directory.\033[0m\n", RED
+#define MOVE_TO_ITSELF "%s\nERROR: Cant't move '%s' to itself.\033[0m\n", RED
+#define MOVE_TO_CHILD "%s\nERROR: Cant't move '%s' to it's child directory.\033[0m\n", RED
+#define NAME_EXISTS_IN_DIRECTORY "%s\nERROR: Entry with name '%s' already exists in directory '%s'.\033[0m\n", RED
 
 #endif //BASIC_FILE_SYSTEM_ERROR_H

@@ -21,9 +21,9 @@ void initializeLinkedList(LinkedList *linkedList);
 
 bool insertNode(LinkedList *linkedList, EntryHeader *entryHeader);
 
-long getINodeNumber(LinkedList *linkedList, char *entryName);
-
 bool removeNode(LinkedList *linkedList, char *entryName);
+
+long getINodeNumber(LinkedList *linkedList, char *entryName);
 
 void displayLinkedList(LinkedList *linkedList);
 

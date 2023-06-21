@@ -18,7 +18,7 @@ void initializeUFS(UFS *ufs, long maxINodes);
 
 bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType);
 
-bool renameEntry(UFS *ufs, Path *entryPath, char *newEntryName);
+bool checkPathInAnother(Path *entryPath, Path *newEntryPath);
 
 bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath);
 

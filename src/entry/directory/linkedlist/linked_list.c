@@ -40,6 +40,53 @@ bool insertNode(LinkedList *linkedList, EntryHeader *entryHeader)
     return true;
 }
 
+bool removeNode(LinkedList *linkedList, char *entryName)
+{
+    Node *currNode = linkedList->head;
+    Node *prevNode = NULL;
+
+    if (!currNode)
+    {
+        return false;
+    }
+
+    while (currNode)
+    {
+        if (strcmp(currNode->entryHeader->name, entryName) == 0)
+        {
+            if (linkedList->nodeCount == 1)
+            {
+                linkedList->head = NULL;
+                linkedList->tail = NULL;
+            }
+
+            if (!currNode->nextNode)
+            {
+                linkedList->tail = prevNode;
+            }
+
+            if (!prevNode)
+            {
+                linkedList->head = currNode->nextNode;
+            }
+            else
+            {
+                prevNode->nextNode = currNode->nextNode;
+            }
+
+            linkedList->nodeCount--;
+
+            free(currNode);
+            return true;
+        }
+
+        prevNode = currNode;
+        currNode = currNode->nextNode;
+    }
+
+    return false;
+}
+
 long getINodeNumber(LinkedList *linkedList, char *entryName)
 {
     Node *currNode = linkedList->head;
@@ -55,42 +102,6 @@ long getINodeNumber(LinkedList *linkedList, char *entryName)
     }
 
     return -1;
-}
-
-bool removeNode(LinkedList *linkedList, char *entryName)
-{
-    Node *currNode = linkedList->head;
-    Node *prevNode = NULL;
-
-    if (!currNode)
-    {
-        return false;
-    }
-
-    while (currNode)
-    {
-        if (strcmp(currNode->entryHeader->name, entryName) == 0)
-        {
-            if (!prevNode)
-            {
-                linkedList->head = linkedList->head->nextNode;
-            }
-            else
-            {
-                prevNode->nextNode = currNode->nextNode;
-            }
-
-            free(currNode);
-            linkedList->nodeCount--;
-
-            return true;
-        }
-
-        prevNode = currNode;
-        currNode = currNode->nextNode;
-    }
-
-    return false;
 }
 
 void displayLinkedList(LinkedList *linkedList)

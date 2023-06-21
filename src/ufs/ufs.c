@@ -134,76 +134,111 @@ bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType)
                     createSingleNode(ufs, entryPath->entryNames[entryPath->size - 1], entryType)->header);
 }
 
-bool renameEntry(UFS *ufs, Path *entryPath, char *newEntryName)
+bool checkPathInAnother(Path *entryPath, Path *newEntryPath)
 {
-    INode *parentINode = findParentINode(ufs, entryPath);
-
-    if (!parentINode)
+    if (entryPath->size < newEntryPath->size)
     {
-        return false;
+        for (int i = 0; (i < entryPath->size && i < newEntryPath->size); i++)
+        {
+            if (strcmp(entryPath->entryNames[i], newEntryPath->entryNames[i]) != 0)
+            {
+                return true;
+            }
+        }
     }
+    else return true;
 
-    long idFound = findINodeIdInDirectory(&parentINode->content.directory,
-                                          entryPath->entryNames[entryPath->size - 1]);
-
-    if (idFound == -1)
-    {
-        printf(INODE_NOT_FOUND, entryPath->entryNames[entryPath->size - 1]);
-        return false;
-    }
-
-    if (findINodeIdInDirectory(&parentINode->content.directory,
-                               newEntryName) != -1)
-    {
-        printf(NAME_EXISTS, newEntryName);
-        return false;
-    }
-
-    return changeINodeEntryName(ufs->iNodes[idFound], newEntryName);
+    return false;
 }
 
 bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
 {
-    /* aki eh pra pegar os tipos de cada entry, importante pra ver se no move vai continuar com o msm nome ou se vai trocar
-
-    diretorio e diretorio -> move o primeiro diretorio para dentro do segundo diretorio; caso o segundo diretorio nao exisir, move o primeiro diretorio para o diretorio onde o segundo diretorio inexistente deveria estar, e passa a ter o nome desse diretorio inexistente; caso o diretorio onde o diretorio inexistente deveria estar nao existir, retorna erro
-    arquivo e diretorio -> move o arquivo para o diretorio; caso o diretorio nao existir, retorna erro
-    arquivo e arquivo -> retorna erro; caso o segundo arquivo nao existir, move o primeiro arquivo para o diretorio onde o segundo arquivo inexistente deveria estar, e passa a ter o nome desse arquivo inexistente; caso o diretorio onde o arquivo inexistente deveria estar nao existir, retorna erro
-    diretorio e arquivo -> retorna erro
-    qualquer caso onde o primeiro nao existir -> retorna erro
-    quando os dois diretorios ou arquivos estiverem no msm diretorio, renomear o arquivo/diretorio
-
     INode *parentINode = findParentINode(ufs, entryPath);
     INode *newParentINode = findParentINode(ufs, newEntryPath);
 
-    para o tipo do newParentINode, tem q ver o q fazer qnd esse path nao existir, mas ainda for um comando valido, como comentado acima
-    */
-
-    // confere se o move eh para o msm diretorio, se for, chama o renameEntry
-    if (entryPath->size ==
-        newEntryPath->size)// && findINodeIdInDirectory() == newEntryType) essa segunda condicao eh pra ver se os dois paths sao pra arquivos
+    if (!parentINode || !newParentINode)
     {
-        for (int i = 0; i < entryPath->size - 1; i++)
-        {
-            if (strcmp(entryPath->entryNames[i], newEntryPath->entryNames[i]) != 0)
-            {
-                break;
-            }
+        return false;
+    }
 
-            if (i == entryPath->size - 2 && strcmp(entryPath->entryNames[i], newEntryPath->entryNames[i]) == 0)
+    char *entryName = entryPath->entryNames[entryPath->size - 1];
+    char *newEntryName = newEntryPath->entryNames[newEntryPath->size - 1];
+
+    Directory *entryDirectory = &parentINode->content.directory;
+    Directory *newEntryDirectory = &newParentINode->content.directory;
+
+    long foundId = findINodeIdInDirectory(entryDirectory, entryName);
+    long newFoundId = findINodeIdInDirectory(newEntryDirectory, newEntryName);
+
+    if (foundId == -1)
+    {
+        printf(FILE_NOT_FOUND, entryName);
+        return false;
+    }
+
+    // caso os paths sejam iguais, retorna erro
+    if (foundId == newFoundId)
+    {
+        if(ufs->iNodes[foundId]->content.entryType == ARCHIVE) printf(MOVE_TO_ARCHIVE, newEntryName);
+        else printf(MOVE_TO_ITSELF, entryName);
+        return false;
+    }
+
+    // confere se o primeiro path esta dentro do segundo path
+    if (!checkPathInAnother(entryPath, newEntryPath))
+    {
+        printf(MOVE_TO_CHILD, entryName);
+        return false;
+    }
+
+    INode *iNode = ufs->iNodes[foundId];
+
+    // segundo path nao existe(nao tem problema)
+    if (newFoundId == -1)
+    {
+        // caso o segundo path nao exista e esteja no mesmo diretorio do primeiro, chama o rename
+        if (parentINode->header->id == newParentINode->header->id)
+        {
+            return changeINodeEntryName(iNode, newEntryName);
+        }
+
+        // caso o segundo path nao exista e esteja num diretorio diferente do primeiro, ele eh movido e chama o rename
+        if (removeEntry(entryDirectory, entryName))
+        {
+            if (addEntry(newEntryDirectory, iNode->header))
             {
-                return renameEntry(ufs, entryPath, newEntryPath->entryNames[newEntryPath->size - 1]);
+                return changeINodeEntryName(iNode, newEntryName);
             }
         }
+
+        return false;
     }
 
-    /*
-    tentavita de move usando delete e create entry, mas provavelmente tem q conferir muito mais coisa ainda
-    if(deleteEntry(ufs, entryPath))
+    // segundo path existe
+    INode *newINode = ufs->iNodes[newFoundId];
+
+    // caso o segundo path exista e for um file, retorna erro
+    if (newINode->content.entryType == ARCHIVE)
     {
-        return createEntry(ufs, newEntryPath, newEntryType)
+        printf(MOVE_TO_ARCHIVE, newEntryName);
+        return false;
     }
-    */
+
+    // caso o segundo path exista e for um diretorio, ele eh movido
+    if(findINodeIdInDirectory(&newINode->content.directory, entryName) == -1)
+    {
+        if (removeEntry(entryDirectory, entryName))
+        {
+            return addEntry(&newINode->content.directory, iNode->header);
+        }
+    }
+    else
+    {
+        printf(NAME_EXISTS_IN_DIRECTORY, entryName, newINode->header->name);
+        return false;
+    }
+
+    return false;
 }
 
 int directoryRemovalAUX(UFS *ufs, Path *entryPath)
@@ -297,7 +332,6 @@ bool deleteEntry(UFS *ufs, Path *entryPath)
         }
     }
 }
-
 
 void displayEntry(UFS *ufs, Path *entryPath)
 {
