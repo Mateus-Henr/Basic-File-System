@@ -352,6 +352,93 @@ bool deleteEntry(UFS *ufs, Path *entryPath)
      */
 }
 
+bool deleteFiles(UFS *ufs, Path *entryPath)
+{
+    INode *parentINode = findParentINode(ufs, entryPath);
+
+    if (!parentINode)
+    {
+        return false;
+    }
+
+    char *fileName = entryPath->entryNames[entryPath->size - 1];
+    long fileId = findINodeIdInDirectory(&parentINode->content.directory, fileName);
+
+    if (fileId == -1)
+    {
+        printf(FILE_NOT_FOUND, fileName);
+        return false;
+    }
+
+    INode *fileINode = ufs->iNodes[fileId];
+
+    if (fileINode->content.entryType != ARCHIVE)
+    {
+        printf("\nNao eh arquivo!\n");
+        return false;
+    }
+
+    if (removeEntry(&parentINode->content.directory, fileName))
+    {
+        freeINode(fileINode);
+        ufs->iNodes[fileId] = NULL;
+        ufs->freeINodes[ufs->freeINodeCount++] = fileINode;
+        return true;
+    }
+
+    return false;
+}
+
+bool deleteDirectory(UFS *ufs, Path *entryPath)
+{
+    INode *parentINode = findParentINode(ufs, entryPath);
+
+    if (!parentINode)
+    {
+        return false;
+    }
+
+    char *dirName = entryPath->entryNames[entryPath->size - 1];
+    long dirId = findINodeIdInDirectory(&parentINode->content.directory, dirName);
+
+    if (dirId == -1)
+    {
+        printf(DIRECTORY_NOT_FOUND);
+        return false;
+    }
+
+    INode *dirINode = ufs->iNodes[dirId];
+
+    if (dirINode->content.entryType != DIRECTORY)
+    {
+        printf("\nNao eh diretorio!\n");
+        return false;
+    }
+
+    if (dirINode->content.directory.entries.head != NULL)
+    {
+        // Delete all files inside the directory first
+        Node *current = dirINode->content.directory.entries.head;
+
+        while (current)
+        {
+
+            current = current->nextNode;
+        }
+    }
+
+    if (removeEntry(&parentINode->content.directory, dirName))
+    {
+        freeINode(dirINode);
+        ufs->iNodes[dirId] = NULL;
+        ufs->freeINodes[ufs->freeINodeCount++] = dirINode;
+        return true;
+    }
+
+    return false;
+}
+
+
 void displayEntry(UFS *ufs, Path *entryPath)
 {
     if (entryPath->size == 1 && entryPath->entryNames[0][0] == '.')

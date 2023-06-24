@@ -22,9 +22,13 @@ bool checkPathInAnother(Path *entryPath, Path *newEntryPath);
 
 bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath);
 
-int directoryRemovalAUX(UFS *ufs, Path *entryPath);
+//int directoryRemovalAUX(UFS *ufs, Path *entryPath);
 
-bool deleteEntry(UFS *ufs, Path *entryPath);
+//bool deleteEntry(UFS *ufs, Path *entryPath);
+
+bool deleteFiles(UFS *ufs, Path *entryPath);
+
+bool deleteDirectory(UFS *ufs, Path *entryPath);
 
 void displayEntry(UFS *ufs, Path *entryPath);
 

@@ -144,7 +144,14 @@ void commandSwitch(UFS *ufs, Command *command)
     }
     else if (strcmp(command->command, RM) == 0)
     {
-        deleteEntry(ufs, command->path);
+        if(command->hasOption){
+            printf("ola");
+            //RM-R = deletarDiretorio
+            deleteDirectory(ufs, command->path);
+            return;
+        }
+        //deletarArquivo
+        deleteFiles(ufs, command->path);
     }
     else if (strcmp(command->command, CAT) == 0)
     {
