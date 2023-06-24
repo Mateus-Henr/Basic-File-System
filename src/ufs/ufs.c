@@ -22,11 +22,12 @@ void initializeUFS(UFS *ufs, long maxINodes)
         exit(EXIT_FAILURE);
     }
 
-    ufs->iNodes[ROOT_INODE] = initializeINode(ROOT_INODE, "/", DIRECTORY);
+    ufs->iNodes[ROOT_INODE] = initializeINode();
+    initializeINodeWithContent(ufs->iNodes[ROOT_INODE], ROOT_INODE, "/", DIRECTORY);
 
     for (long i = 1; i < maxINodes; i++)
     {
-        ufs->iNodes[i] = NULL;
+        ufs->iNodes[i] = initializeINode();
     }
 
     ufs->freeINodes = (INode **) malloc(maxINodes * sizeof(INode *));
@@ -41,7 +42,9 @@ void initializeUFS(UFS *ufs, long maxINodes)
 
 INode *createSingleNode(UFS *ufs, char *entryName, enum EntryType entryType)
 {
-    return ufs->iNodes[ufs->iNodeCount++] = initializeINode(ufs->iNodeCount, entryName, entryType);
+    long freeINode = ufs->iNodeCount++;
+    initializeINodeWithContent(ufs->iNodes[freeINode], ufs->iNodeCount, entryName, entryType);
+    return ufs->iNodes[freeINode];
 }
 
 INode *findParentINode(UFS *ufs, Path *entryPath)
@@ -145,7 +148,8 @@ bool checkPathInAnother(Path *entryPath, Path *newEntryPath)
             }
         }
     }
-    else return true;
+    else
+    { return true; }
 
     return false;
 }
@@ -178,8 +182,10 @@ bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
     // caso os paths sejam iguais, retorna erro
     if (foundId == newFoundId)
     {
-        if(ufs->iNodes[foundId]->content.entryType == ARCHIVE) printf(MOVE_TO_ARCHIVE, newEntryName);
-        else printf(MOVE_TO_ITSELF, entryName);
+        if (ufs->iNodes[foundId]->content.entryType == ARCHIVE)
+        { printf(MOVE_TO_ARCHIVE, newEntryName); }
+        else
+        { printf(MOVE_TO_ITSELF, entryName); }
         return false;
     }
 
@@ -224,7 +230,7 @@ bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
     }
 
     // caso o segundo path exista e for um diretorio, ele eh movido
-    if(findINodeIdInDirectory(&newINode->content.directory, entryName) == -1)
+    if (findINodeIdInDirectory(&newINode->content.directory, entryName) == -1)
     {
         if (removeEntry(entryDirectory, entryName))
         {
@@ -236,7 +242,7 @@ bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
         printf(NAME_EXISTS_IN_DIRECTORY, entryName, newINode->header->name);
         return false;
     }
-    
+
     return false;
 }
 

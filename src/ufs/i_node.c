@@ -5,8 +5,7 @@
 #include "i_node.h"
 #include "../miscelaneous/error.h"
 
-
-INode *initializeINode(long id, char *entryName, enum EntryType entryType)
+INode *initializeINode()
 {
     INode *iNode = (INode *) malloc(sizeof(INode));
 
@@ -16,11 +15,14 @@ INode *initializeINode(long id, char *entryName, enum EntryType entryType)
         exit(EXIT_FAILURE);
     }
 
+    return iNode;
+}
+
+void initializeINodeWithContent(INode *iNode, long id, char *entryName, enum EntryType entryType)
+{
     iNode->header = initializeEntryHeader(id, entryName);
     initializeEntryMetadata(&iNode->metadata, 10, 1);
     initializeEntryContent(&iNode->content, entryType);
-
-    return iNode;
 }
 
 bool changeINodeEntryName(INode *iNode, char *newEntryName)
