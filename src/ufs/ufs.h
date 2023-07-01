@@ -3,12 +3,13 @@
 
 #include <stdbool.h>
 #include "i_node.h"
+#include "linked_list_i_node.h"
 #include "../path/path.h"
 
 typedef struct UFS
 {
     INode **iNodes;
-    INode **freeINodes;
+    LinkedListINode freeINodes;
     long maxINodes;
     long freeINodeCount;
     long iNodeCount;

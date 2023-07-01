@@ -4,6 +4,8 @@ make:
         src/command/command.h \
         src/ufs/ufs.c \
         src/ufs/ufs.h \
+        src/ufs/linked_list_i_node.c \
+        src/ufs/linked_list_i_node.h \
         src/ufs/i_node.c \
         src/ufs/i_node.h \
         src/path/path.c \

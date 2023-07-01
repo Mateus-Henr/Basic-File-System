@@ -30,21 +30,26 @@ void initializeUFS(UFS *ufs, long maxINodes)
         ufs->iNodes[i] = initializeINode();
     }
 
-    ufs->freeINodes = (INode **) malloc(maxINodes * sizeof(INode *));
+    initializeLinkedListINode(&ufs->freeINodes);
 
-    if (!ufs->freeINodes)
+    for (long i = 1; i < maxINodes; i++)
     {
-        printf(ALLOCATION_ERROR, "UFS Free INodes.");
-        free(ufs->iNodes);
-        exit(EXIT_FAILURE);
+        if(!insertNodeINode(&ufs->freeINodes, i))
+        {
+            exit(EXIT_FAILURE);
+        }
     }
 }
 
 INode *createSingleNode(UFS *ufs, char *entryName, enum EntryType entryType)
 {
-    long freeINode = ufs->iNodeCount++;
-    initializeINodeWithContent(ufs->iNodes[freeINode], ufs->iNodeCount, entryName, entryType);
-    return ufs->iNodes[freeINode];
+    long freeINode = (&ufs->freeINodes)->head->id;
+    initializeINodeWithContent(ufs->iNodes[freeINode], freeINode, entryName, entryType);
+    if(removeNodeINode(&ufs->freeINodes, freeINode))
+    {
+        ufs->iNodeCount++;
+        return ufs->iNodes[freeINode];
+    }
 }
 
 INode *findParentINode(UFS *ufs, Path *entryPath)
@@ -250,7 +255,11 @@ bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
 bool deleteEntry(UFS *ufs, Path *entryPath)
 {
     INode *parentINode = findParentINode(ufs, entryPath);
-    return removeEntry(&parentINode->content.directory, entryPath->entryNames[entryPath->size - 1]);
+    INode *iNode = ufs->iNodes[findINodeIdInDirectory(&parentINode->content.directory, entryPath->entryNames[entryPath->size - 1])];
+    if(insertNodeINode(&ufs->freeINodes, iNode->header->id))
+    {
+        return removeEntry(&parentINode->content.directory, entryPath->entryNames[entryPath->size - 1]);
+    }
 }
 
 void displayEntry(UFS *ufs, Path *entryPath)
