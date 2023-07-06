@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "linked_list_i_node.h"
-#include "../miscelaneous/error.h"
+#include "../../miscelaneous/error.h"
 
 void initializeLinkedListINode(LinkedListINode *linkedList)
 {

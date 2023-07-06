@@ -144,7 +144,7 @@ void commandSwitch(UFS *ufs, Command *command)
     }
     else if (strcmp(command->command, RM) == 0)
     {
-        deleteEntry(ufs, command->path);
+        deleteEntry(ufs, command->path, command->hasOption);
     }
     else if (strcmp(command->command, CAT) == 0)
     {

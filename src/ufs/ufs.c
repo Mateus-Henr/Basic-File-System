@@ -34,7 +34,7 @@ void initializeUFS(UFS *ufs, long maxINodes)
 
     for (long i = 1; i < maxINodes; i++)
     {
-        if(!insertNodeINode(&ufs->freeINodes, i))
+        if (!insertNodeINode(&ufs->freeINodes, i))
         {
             exit(EXIT_FAILURE);
         }
@@ -43,13 +43,26 @@ void initializeUFS(UFS *ufs, long maxINodes)
 
 INode *createSingleNode(UFS *ufs, char *entryName, enum EntryType entryType)
 {
-    long freeINode = (&ufs->freeINodes)->head->id;
+    long freeINode = ufs->freeINodes.head->id;
     initializeINodeWithContent(ufs->iNodes[freeINode], freeINode, entryName, entryType);
-    if(removeNodeINode(&ufs->freeINodes, freeINode))
+
+    if (removeNodeINode(&ufs->freeINodes, freeINode))
     {
         ufs->iNodeCount++;
         return ufs->iNodes[freeINode];
     }
+
+    return NULL;
+}
+
+bool deleteSingleNode(UFS *ufs, INode *parentINode, long iNodeId, char *entryName)
+{
+    bool status = removeEntry(&parentINode->content.directory, entryName);
+
+    freeINode(ufs->iNodes[iNodeId]);
+    ufs->iNodes[iNodeId] = NULL;
+
+    return status;
 }
 
 INode *findParentINode(UFS *ufs, Path *entryPath)
@@ -251,15 +264,64 @@ bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
     return false;
 }
 
+bool deleteEntryTraversal(UFS *ufs, long iNodeId, char *entryName)
+{
+    INode *iNode = ufs->iNodes[iNodeId];
 
-bool deleteEntry(UFS *ufs, Path *entryPath)
+    if (iNode->content.entryType != DIRECTORY)
+    {
+        return true;
+    }
+
+    Node *current = iNode->content.directory.entries.head;
+    bool status = true;
+
+    while (current)
+    {
+        deleteEntryTraversal(ufs, current->entryHeader->id, current->entryHeader->name);
+
+        if (!(status = deleteSingleNode(ufs, ufs->iNodes[iNodeId], current->entryHeader->id, current->entryHeader->name)))
+        {
+            return false;
+        }
+
+        current = current->nextNode;
+    }
+
+    return status;
+}
+
+bool deleteEntry(UFS *ufs, Path *entryPath, bool isTraversalDeletion)
 {
     INode *parentINode = findParentINode(ufs, entryPath);
-    INode *iNode = ufs->iNodes[findINodeIdInDirectory(&parentINode->content.directory, entryPath->entryNames[entryPath->size - 1])];
-    if(insertNodeINode(&ufs->freeINodes, iNode->header->id))
+
+    if (!parentINode)
     {
-        return removeEntry(&parentINode->content.directory, entryPath->entryNames[entryPath->size - 1]);
+        printf(DIRECTORY_NOT_FOUND);
+        return false;
     }
+
+    long idFound = findINodeIdInDirectory(&parentINode->content.directory,
+                                          entryPath->entryNames[entryPath->size - 1]);
+
+    if (idFound == -1)
+    {
+        printf(INODE_NOT_FOUND, entryPath->entryNames[entryPath->size - 1]);
+        return false;
+    }
+
+    if (ufs->iNodes[idFound]->content.entryType == ARCHIVE)
+    {
+        return deleteSingleNode(ufs, parentINode, idFound, entryPath->entryNames[entryPath->size - 1]);
+    }
+
+    if (!isTraversalDeletion)
+    {
+        printf(DIRECTORY_IS_NOT_EMPTY);
+        return false;
+    }
+
+    return deleteEntryTraversal(ufs, idFound, entryPath->entryNames[entryPath->size - 1]);
 }
 
 void displayEntry(UFS *ufs, Path *entryPath)

@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 #include "i_node.h"
-#include "linked_list_i_node.h"
+#include "linkedlist/linked_list_i_node.h"
 #include "../path/path.h"
 
 typedef struct UFS
@@ -23,7 +23,7 @@ bool checkPathInAnother(Path *entryPath, Path *newEntryPath);
 
 bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath);
 
-bool deleteEntry(UFS *ufs, Path *entryPath);
+bool deleteEntry(UFS *ufs, Path *entryPath, bool isTraversalDeletion);
 
 void displayEntry(UFS *ufs, Path *entryPath);
 

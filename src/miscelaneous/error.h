@@ -19,6 +19,8 @@
 #define INODE_NOT_FOUND "%s\nERROR: Couldn't find INode for '%s'.\033[0m\n", RED
 #define MAX_NUMBER_OF_INODES "%s\nERROR: Max number of Inodes has been reached.\033[0m\n", RED
 #define DIRECTORY_EXISTS "%s\nERROR: Directory already exists.\033[0m\n", RED
+#define DIRECTORY_NOT_FOUND "%s\nERROR: Directory does not exist.\033[0m\n", RED
+#define DIRECTORY_IS_NOT_EMPTY "%s\nERROR: Directory is not empty.\033[0m\n", RED
 #define FILE_EXISTS "%s\nERROR: File already exists.\033[0m\n", RED
 #define FILE_IS_NOT_DIRECTORY "%s\nERROR: Couldn't create entry, '%s' is not a directory.\033[0m\n", RED
 #define ERROR_RENAME "%s\nERROR: Couldn't change entry name.\033[0m\n", RED
@@ -28,8 +30,8 @@
 #define INVALID_OPTION "%s\nERROR: Invalid option(s).\033[0m\n", RED
 #define FILE_NOT_FOUND "%s\nERROR: Couldn't find file '%s'.\033[0m\n", RED
 #define MOVE_TO_ARCHIVE "%s\nERROR: Couldn't move entry, '%s' is not a directory.\033[0m\n", RED
-#define MOVE_TO_ITSELF "%s\nERROR: Cant't move '%s' to itself.\033[0m\n", RED
-#define MOVE_TO_CHILD "%s\nERROR: Cant't move '%s' to it's child directory.\033[0m\n", RED
+#define MOVE_TO_ITSELF "%s\nERROR: Couldn't move '%s' to itself.\033[0m\n", RED
+#define MOVE_TO_CHILD "%s\nERROR: Couldn't move '%s' to it's child directory.\033[0m\n", RED
 #define NAME_EXISTS_IN_DIRECTORY "%s\nERROR: Entry with name '%s' already exists in directory '%s'.\033[0m\n", RED
 
 #endif //BASIC_FILE_SYSTEM_ERROR_H
