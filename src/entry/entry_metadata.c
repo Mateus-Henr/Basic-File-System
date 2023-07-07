@@ -45,7 +45,7 @@ void displayEntryMetadata(EntryMetadata *entryMetadata)
 
     // Display metadata
     printf("%s  %3hd %-8lu %-8zu %8lu %s\n",
-           permissions, st.st_nlink,
+           permissions, st.st_mode,
            entryMetadata->ownership,
            entryMetadata->sizeInBytes,
            entryMetadata->ownership,

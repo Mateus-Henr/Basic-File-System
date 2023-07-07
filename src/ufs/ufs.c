@@ -264,7 +264,7 @@ bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
     return false;
 }
 
-bool deleteEntryTraversal(UFS *ufs, long iNodeId, char *entryName)
+bool deleteEntryTraversal(UFS *ufs, long iNodeId)
 {
     INode *iNode = ufs->iNodes[iNodeId];
 
@@ -278,14 +278,20 @@ bool deleteEntryTraversal(UFS *ufs, long iNodeId, char *entryName)
 
     while (current)
     {
-        deleteEntryTraversal(ufs, current->entryHeader->id, current->entryHeader->name);
+        Node *nodeToDelete = current;
 
-        if (!(status = deleteSingleNode(ufs, ufs->iNodes[iNodeId], current->entryHeader->id, current->entryHeader->name)))
+        if (!deleteEntryTraversal(ufs, current->entryHeader->id))
         {
             return false;
         }
 
         current = current->nextNode;
+
+        if (!(status = deleteSingleNode(ufs, ufs->iNodes[iNodeId], nodeToDelete->entryHeader->id,
+                                        nodeToDelete->entryHeader->name)))
+        {
+            return false;
+        }
     }
 
     return status;
@@ -321,7 +327,18 @@ bool deleteEntry(UFS *ufs, Path *entryPath, bool isTraversalDeletion)
         return false;
     }
 
-    return deleteEntryTraversal(ufs, idFound, entryPath->entryNames[entryPath->size - 1]);
+    if (entryPath->size == 1)
+    {
+        return deleteEntryTraversal(ufs, idFound) && deleteSingleNode(ufs,
+                                                                      ufs->iNodes[ROOT_INODE],
+                                                                      idFound,
+                                                                      ufs->iNodes[idFound]->header->name);
+    }
+
+    return deleteEntryTraversal(ufs, idFound) && deleteSingleNode(ufs,
+                                                                  parentINode,
+                                                                  idFound,
+                                                                  ufs->iNodes[idFound]->header->name);
 }
 
 void displayEntry(UFS *ufs, Path *entryPath)
@@ -414,8 +431,8 @@ void traverseDirectory(UFS *ufs, Directory *directory, long inodeId, int level)
         }
 
         printf("%s\n", current->entryHeader->name);
-
         traverseDirectory(ufs, directory, current->entryHeader->id, level + 1);
+
         current = current->nextNode;
     }
 }
