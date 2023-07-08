@@ -7,7 +7,9 @@ typedef struct Block
     long size;
 } Block;
 
-Block *initializeBlock(char *content, long size);
+void initializeBlock(Block *block, long size);
+
+void addBlockContent(Block *block, char *content);
 
 void freeBlock(Block *block);
 

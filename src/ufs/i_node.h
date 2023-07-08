@@ -13,7 +13,7 @@ typedef struct INode
 
 INode *initializeINode();
 
-void initializeINodeWithContent(INode *iNode, long id, char *entryName, enum EntryType entryType);
+void initializeINodeWithContent(INode *iNode, long id, char *entryName, enum EntryType entryType, Memory *memory);
 
 bool changeINodeEntryName(INode *iNode, char *newEntryName);
 

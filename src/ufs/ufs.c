@@ -13,6 +13,7 @@ void initializeUFS(UFS *ufs, long maxINodes)
     ufs->maxINodes = maxINodes;
     ufs->iNodeCount = 1;
     ufs->freeINodeCount = maxINodes - ufs->iNodeCount;
+    initializeMemory(ufs->memory, maxINodes, 100);
 
     ufs->iNodes = (INode **) malloc(maxINodes * sizeof(INode *));
 
@@ -23,7 +24,7 @@ void initializeUFS(UFS *ufs, long maxINodes)
     }
 
     ufs->iNodes[ROOT_INODE] = initializeINode();
-    initializeINodeWithContent(ufs->iNodes[ROOT_INODE], ROOT_INODE, "/", DIRECTORY);
+    initializeINodeWithContent(ufs->iNodes[ROOT_INODE], ROOT_INODE, "/", DIRECTORY, ufs->memory);
 
     for (long i = 1; i < maxINodes; i++)
     {
@@ -44,7 +45,7 @@ void initializeUFS(UFS *ufs, long maxINodes)
 INode *createSingleNode(UFS *ufs, char *entryName, enum EntryType entryType)
 {
     long freeINode = ufs->freeINodes.head->id;
-    initializeINodeWithContent(ufs->iNodes[freeINode], freeINode, entryName, entryType);
+    initializeINodeWithContent(ufs->iNodes[freeINode], freeINode, entryName, entryType, ufs->memory);
 
     if (removeNodeINode(&ufs->freeINodes, freeINode))
     {

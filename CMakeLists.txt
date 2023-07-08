@@ -22,8 +22,8 @@ add_executable(Basic_File_System src/main.c
         src/entry/directory/directory.h
         src/entry/directory/linkedlist/linked_list.c
         src/entry/directory/linkedlist/linked_list.h
-        src/entry/file/block.c
-        src/entry/file/block.h
+        src/memory/block.c
+        src/memory/block.h
         src/path/path.c
         src/path/path.h
         src/command/command.c
@@ -32,4 +32,4 @@ add_executable(Basic_File_System src/main.c
         src/miscelaneous/error.h
         src/miscelaneous/print.h
         src/entry/entry_header.c
-        src/entry/entry_header.h)
+        src/entry/entry_header.h src/memory/memory.c src/memory/memory.h src/memory/block.c src/memory/block.h)

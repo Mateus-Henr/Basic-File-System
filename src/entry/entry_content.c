@@ -1,7 +1,7 @@
 #include "entry_content.h"
 
 
-void initializeEntryContent(EntryContent *entryContent, enum EntryType entryType)
+void initializeEntryContent(EntryContent *entryContent, enum EntryType entryType, Memory *memory)
 {
     if (entryType == DIRECTORY)
     {
@@ -11,7 +11,7 @@ void initializeEntryContent(EntryContent *entryContent, enum EntryType entryType
     else
     {
         entryContent->entryType = ARCHIVE;
-        initializeFile(&entryContent->file, "CONTENT", 20);
+        initializeFile(&entryContent->file, memory);
     }
 }
 
