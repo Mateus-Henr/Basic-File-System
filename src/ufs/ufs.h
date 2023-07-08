@@ -13,6 +13,7 @@ typedef struct UFS
     long maxINodes;
     long freeINodeCount;
     long iNodeCount;
+    Memory memory;
 } UFS;
 
 void initializeUFS(UFS *ufs, long maxINodes);

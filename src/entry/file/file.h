@@ -1,19 +1,19 @@
 #ifndef BASIC_FILE_SYSTEM_FILE_H
 #define BASIC_FILE_SYSTEM_FILE_H
 
-#include "block.h"
+#include "../../memory/block.h"
+#include "../../memory/memory.h"
 
 #define SIZE_DIRECT_BLOCKS 12
 
 typedef struct File
 {
     Block *directBlocks[SIZE_DIRECT_BLOCKS];
-    Block *indirectBlock;
-    Block *doubleIndirectBlock;
-    Block *tripleIndirectBlock;
+    Block **indirectBlock;
+    long numberOfBlocks;
 } File;
 
-void initializeFile(File *file, char *content, long blockSize);
+void initializeFile(File *file, Memory *memory);
 
 void displayFileContent(File *file);
 

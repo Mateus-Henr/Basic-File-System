@@ -20,7 +20,7 @@ typedef struct EntryContent
     };
 } EntryContent;
 
-void initializeEntryContent(EntryContent *entryContent, enum EntryType entryType);
+void initializeEntryContent(EntryContent *entryContent, enum EntryType entryType, Memory *memory);
 
 void displayEntryContent(EntryContent *entryContent);
 

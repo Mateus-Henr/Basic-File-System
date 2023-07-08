@@ -33,6 +33,6 @@
 #define MOVE_TO_ITSELF "%s\nERROR: Couldn't move '%s' to itself.\033[0m\n", RED
 #define MOVE_TO_CHILD "%s\nERROR: Couldn't move '%s' to it's child directory.\033[0m\n", RED
 #define NAME_EXISTS_IN_DIRECTORY "%s\nERROR: Entry with name '%s' already exists in directory '%s'.\033[0m\n", RED
-#define FILE_ERROR "%s\nERROR: Could't open file '%s'.\033[0m\n", RED
+#define FULL_MEMORY "%s\nERROR: Memory is full.\033[0m\n", RED
 
 #endif //BASIC_FILE_SYSTEM_ERROR_H

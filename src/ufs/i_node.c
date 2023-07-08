@@ -18,11 +18,11 @@ INode *initializeINode()
     return iNode;
 }
 
-void initializeINodeWithContent(INode *iNode, long id, char *entryName, enum EntryType entryType)
+void initializeINodeWithContent(INode *iNode, long id, char *entryName, enum EntryType entryType, Memory *memory)
 {
     iNode->header = initializeEntryHeader(id, entryName);
     initializeEntryMetadata(&iNode->metadata, 10, 1);
-    initializeEntryContent(&iNode->content, entryType);
+    initializeEntryContent(&iNode->content, entryType, memory);
 }
 
 bool changeINodeEntryName(INode *iNode, char *newEntryName)
