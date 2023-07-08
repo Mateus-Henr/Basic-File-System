@@ -54,8 +54,8 @@ void initializeFile(File *file, Memory *memory)
         }
 
         char extractedString[memory->blockSize + 1];
-
         strncpy(extractedString, (i * memory->blockSize) + fileContents, memory->blockSize);
+        extractedString[memory->blockSize] = '\0';
         addFileContent(memory, id, extractedString);
 
         if (file->numberOfBlocks <= 12)
