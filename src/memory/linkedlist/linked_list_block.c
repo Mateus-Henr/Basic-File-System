@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../../miscelaneous/error.h"
 
 #include "linked_list_block.h"
-#include "../../miscelaneous/error.h"
 
 
 void initializeLinkedListBlock(LinkedListBlock *linkedList)

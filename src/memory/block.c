@@ -5,12 +5,6 @@
 #include "block.h"
 #include "../miscelaneous/error.h"
 
-
-void initializeBlock(Block *block, long size)
-{
-    block->size = size;
-}
-
 void addBlockContent(Block *block, char *content)
 {
     block->content = strdup(content);

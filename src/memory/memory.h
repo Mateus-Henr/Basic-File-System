@@ -3,7 +3,6 @@
 
 #include "block.h"
 #include "linkedlist/linked_list_block.h"
-#include "../entry/file/file.h"
 
 typedef struct Memory
 {
@@ -16,6 +15,8 @@ typedef struct Memory
 
 void initializeMemory(Memory *memory, long maxBlocks, long blockSize);
 
-bool addFileContent(Memory *memory, File *file, char *content);
+long getAvailableBlock(Memory *memory);
+
+void addFileContent(Memory *memory, long blockId, char *content);
 
 #endif //BASIC_FILE_SYSTEM_MEMORY_H

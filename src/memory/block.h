@@ -4,10 +4,7 @@
 typedef struct Block
 {
     char *content;
-    long size;
 } Block;
-
-void initializeBlock(Block *block, long size);
 
 void addBlockContent(Block *block, char *content);
 

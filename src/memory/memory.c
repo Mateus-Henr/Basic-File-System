@@ -1,6 +1,4 @@
 #include <stdlib.h>
-#include <string.h>
-#include <math.h>
 #include "../miscelaneous/error.h"
 
 #include "memory.h"
@@ -23,33 +21,16 @@ void initializeMemory(Memory *memory, long maxBlocks, long blockSize)
 
     for (int i = 0; i < maxBlocks; i++)
     {
-        initializeBlock(&memory->blocks[i], blockSize);
         insertNodeBlock(&memory->freeBlocks, i);
     }
 }
 
-bool addFileContent(Memory *memory, File *file, char *content)
+long getAvailableBlock(Memory *memory)
 {
-    long stringLength = (long) strlen(content);
-    long numberOfBlocks = ceil((double) stringLength / (double) memory->blockSize);
+    return popNodeBlock(&memory->freeBlocks);
+}
 
-    for (int i = 0; i < numberOfBlocks; i++)
-    {
-        long id = popNodeBlock(&memory->freeBlocks);
-
-        if (id == -1)
-        {
-            printf(FULL_MEMORY);
-            return false;
-        }
-
-        char extractedString[memory->blockSize];
-
-        strncpy(extractedString, content, memory->blockSize * i);
-        addBlockContent(&memory->blocks[id], extractedString);
-
-        file->directBlocks[i] = &memory->blocks[id];
-    }
-
-    return true;
+void addFileContent(Memory *memory, long blockId, char *content)
+{
+    addBlockContent(&memory->blocks[blockId], content);
 }

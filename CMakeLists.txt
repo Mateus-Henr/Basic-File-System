@@ -32,4 +32,12 @@ add_executable(Basic_File_System src/main.c
         src/miscelaneous/error.h
         src/miscelaneous/print.h
         src/entry/entry_header.c
-        src/entry/entry_header.h src/memory/memory.c src/memory/memory.h src/memory/block.c src/memory/block.h)
+        src/entry/entry_header.h
+        src/memory/memory.c
+        src/memory/memory.h
+        src/memory/block.c
+        src/memory/block.h
+        src/memory/linkedlist/linked_list_block.c
+        src/memory/linkedlist/linked_list_block.h)
+
+target_link_libraries(Basic_File_System m)

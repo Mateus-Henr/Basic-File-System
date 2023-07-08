@@ -9,9 +9,8 @@
 typedef struct File
 {
     Block *directBlocks[SIZE_DIRECT_BLOCKS];
-    Block *indirectBlock;
-    Block *doubleIndirectBlock;
-    Block *tripleIndirectBlock;
+    Block **indirectBlock;
+    long numberOfBlocks;
 } File;
 
 void initializeFile(File *file, Memory *memory);
