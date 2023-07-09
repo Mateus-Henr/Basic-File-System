@@ -15,8 +15,10 @@ typedef struct Memory
 
 void initializeMemory(Memory *memory, long maxBlocks, long blockSize);
 
-long getAvailableBlock(Memory *memory);
+long getAvailableBlockIdInMemory(Memory *memory);
 
 void addFileContent(Memory *memory, long blockId, char *content);
+
+bool removeBlockFromMemory(Memory *memory, long blockId);
 
 #endif //BASIC_FILE_SYSTEM_MEMORY_H

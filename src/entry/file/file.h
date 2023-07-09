@@ -9,7 +9,7 @@
 typedef struct File
 {
     Block *directBlocks[SIZE_DIRECT_BLOCKS];
-    Block **indirectBlock;
+    Block **indirectBlocks;
     long numberOfBlocks;
 } File;
 
@@ -17,6 +17,6 @@ void initializeFile(File *file, Memory *memory);
 
 void displayFileContent(File *file);
 
-void freeFile(File *file);
+void freeFile(File *file, Memory *memory);
 
 #endif //BASIC_FILE_SYSTEM_FILE_H

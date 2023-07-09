@@ -5,8 +5,9 @@
 #include "block.h"
 #include "../miscelaneous/error.h"
 
-void addBlockContent(Block *block, char *content)
+void addBlockContent(Block *block, long id, char *content)
 {
+    block->id = id;
     block->content = strdup(content);
 
     if (!block->content)
@@ -19,13 +20,8 @@ void addBlockContent(Block *block, char *content)
 
 void freeBlock(Block *block)
 {
-    if (block)
+    if (block->content)
     {
-        if (block->content)
-        {
-            free(block->content);
-        }
-
-        free(block);
+        free(block->content);
     }
 }

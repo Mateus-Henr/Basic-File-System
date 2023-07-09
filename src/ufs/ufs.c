@@ -60,6 +60,11 @@ bool deleteSingleNode(UFS *ufs, INode *parentINode, long iNodeId, char *entryNam
 {
     bool status = removeEntry(&parentINode->content.directory, entryName);
 
+    if (ufs->iNodes[iNodeId]->content.entryType == ARCHIVE)
+    {
+        freeFile(&ufs->iNodes[iNodeId]->content.file, &ufs->memory);
+    }
+
     freeINode(ufs->iNodes[iNodeId]);
     ufs->iNodes[iNodeId] = NULL;
 

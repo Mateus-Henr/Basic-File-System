@@ -3,10 +3,11 @@
 
 typedef struct Block
 {
+    long id;
     char *content;
 } Block;
 
-void addBlockContent(Block *block, char *content);
+void addBlockContent(Block *block, long id, char *content);
 
 void freeBlock(Block *block);
 

@@ -40,12 +40,16 @@ void initializeFile(File *file, Memory *memory)
 
     if (file->numberOfBlocks > 12)
     {
-        file->indirectBlock = (Block **) malloc(file->numberOfBlocks * sizeof(Block *));
+        file->indirectBlocks = (Block **) malloc(file->numberOfBlocks * sizeof(Block *));
+    }
+    else
+    {
+        file->indirectBlocks = NULL;
     }
 
     for (int i = 0; i < file->numberOfBlocks; i++)
     {
-        long id = getAvailableBlock(memory);
+        long id = getAvailableBlockIdInMemory(memory);
 
         if (id == -1)
         {
@@ -64,7 +68,7 @@ void initializeFile(File *file, Memory *memory)
         }
         else
         {
-            file->indirectBlock[i] = &memory->blocks[id];
+            file->indirectBlocks[i] = &memory->blocks[id];
         }
     }
 
@@ -82,20 +86,22 @@ void displayFileContent(File *file)
         }
         else
         {
-            printf("%s", file->indirectBlock[i]->content);
+            printf("%s", file->indirectBlocks[i]->content);
         }
     }
 }
 
-void freeFile(File *file)
+void freeFile(File *file, Memory *memory)
 {
-    for (int i = 0; i < SIZE_DIRECT_BLOCKS; i++)
+    for (int i = 0; i < file->numberOfBlocks; i++)
     {
-        freeBlock(file->directBlocks[i]);
-
-        if (file->indirectBlock)
+        if (!file->indirectBlocks)
         {
-            free(file->indirectBlock);
+            removeBlockFromMemory(memory, file->directBlocks[i]->id);
+        }
+        else
+        {
+            removeBlockFromMemory(memory, file->indirectBlocks[i]->id);
         }
     }
 }
