@@ -1,12 +1,16 @@
 mkdir a
 mkdir a/b
 touch aa
+cat aa
+tree
 touch a/bb
+cat a/bb
 mv aa a
 mv a/bb a/b
 mkdir c
 mv c a/b
 touch a/b/dd
+cat a/b/dd
 mv a/b/dd a/b/c/cc
 mkdir a/e
 mv a/e a/b/c/d

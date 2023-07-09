@@ -39,6 +39,7 @@ int main()
 
     while(true)
     {
+        srand(time(NULL));
         char inputType[UCHAR_MAX];
 
         printf("Would you like to enter a command file? (Y/n)?\n");

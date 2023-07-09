@@ -2,17 +2,28 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <time.h>
 #include "../../miscelaneous/colour.h"
 #include "../../miscelaneous/error.h"
 
 #include "file.h"
 
 #define FILE_CONTENT "../files/content.txt"
+#define FILE1 "../files/shrek1.txt"
+#define FILE2 "../files/shrek2.txt"
+#define FILE3 "../files/shrek3.txt"
+#define FILE4 "../files/marquin.txt"
+
 
 
 void initializeFile(File *file, Memory *memory)
 {
-    FILE *realFile = fopen(FILE_CONTENT, "r");
+    const char* files[] = {FILE_CONTENT, FILE1, FILE2, FILE3, FILE4};
+    int numFiles = sizeof(files)/sizeof(files[0]);
+    int randomIndex = rand()% numFiles;
+    const char* randomFILE = files[randomIndex];
+
+    FILE *realFile = fopen(randomFILE, "r");
 
     if (!realFile)
     {
