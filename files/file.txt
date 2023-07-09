@@ -1,5 +1,16 @@
 mkdir a
 mkdir a/b
-tree
-touch c
+touch aa
+touch a/bb
+mv aa a
+mv a/bb a/b
+mkdir c
+mv c a/b
+touch a/b/dd
+mv a/b/dd a/b/c/cc
+mkdir a/e
+mv a/e a/b/c/d
+rm a/b/c/cc
+rm -r a/b/c
+rm -r a/b
 tree

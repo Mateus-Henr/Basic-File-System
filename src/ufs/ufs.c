@@ -1,18 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 
 #include "ufs.h"
 #include "../miscelaneous/error.h"
+#include "../miscelaneous/verbose.h"
 
 #define DELIMITER "/"
 #define ROOT_INODE 0
 
-void initializeUFS(UFS *ufs, long maxINodes)
+void initializeUFS(UFS *ufs, long maxINodes, bool mode)
 {
     ufs->maxINodes = maxINodes;
     ufs->iNodeCount = 1;
     ufs->freeINodeCount = maxINodes - ufs->iNodeCount;
+    ufs->verbose = mode;
     initializeMemory(&ufs->memory, maxINodes, 100);
 
     ufs->iNodes = (INode **) malloc(maxINodes * sizeof(INode *));
@@ -58,6 +61,8 @@ INode *createSingleNode(UFS *ufs, char *entryName, enum EntryType entryType)
 
 bool deleteSingleNode(UFS *ufs, INode *parentINode, long iNodeId, char *entryName)
 {
+    insertNodeINode(ufs->freeINodes, iNodeId);
+
     bool status = removeEntry(&parentINode->content.directory, entryName);
 
     if (ufs->iNodes[iNodeId]->content.entryType == ARCHIVE)
@@ -104,6 +109,39 @@ INode *findParentINode(UFS *ufs, Path *entryPath)
     }
 
     return parentINode;
+}
+
+void getPath(char *pathString, Path *path, bool last)
+{
+    pathString[0] = '\0';
+
+    if(path->size == 1)
+    {
+        if(!last)
+        {
+            strcat(pathString, ".");
+        }
+        else
+        {
+            strcat(pathString, path->entryNames[path->size - 1]);
+        }
+    }
+    else
+    {
+        for(int i = 0; i < path->size - 1; i++)
+        {
+            strcat(pathString, path->entryNames[i]);
+            if(i < path->size - 2)
+            {
+                strcat(pathString, "/");
+            }
+        }
+        if(last)
+        {
+            strcat(pathString, "/");
+            strcat(pathString, path->entryNames[path->size - 1]);
+        }
+    }
 }
 
 bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType)
@@ -156,8 +194,27 @@ bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType)
         return true;
     }
 
-    return addEntry(&parentINode->content.directory,
-                    createSingleNode(ufs, entryPath->entryNames[entryPath->size - 1], entryType)->header);
+    if(addEntry(&parentINode->content.directory, createSingleNode(ufs, entryPath->entryNames[entryPath->size - 1], entryType)->header))
+    {
+        if(ufs->verbose == true)
+        {
+            char path[UCHAR_MAX];
+            getPath(path, entryPath, false);
+
+            if(entryType == ARCHIVE)
+            {
+                printf(VERBOSE_TOUCH, entryPath->entryNames[entryPath->size - 1], path);
+            }
+            else
+            {
+                printf(VERBOSE_MKDIR, entryPath->entryNames[entryPath->size - 1], path);
+            }
+        }
+
+        return true;
+    }
+
+    return false;
 }
 
 bool checkPathInAnother(Path *entryPath, Path *newEntryPath)
@@ -180,6 +237,10 @@ bool checkPathInAnother(Path *entryPath, Path *newEntryPath)
 
 bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
 {
+    char pathString[UCHAR_MAX];
+    char newPathString[UCHAR_MAX];
+    getPath(pathString, entryPath, false);
+    
     INode *parentINode = findParentINode(ufs, entryPath);
     INode *newParentINode = findParentINode(ufs, newEntryPath);
 
@@ -228,7 +289,24 @@ bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
         // caso o segundo path nao exista e esteja no mesmo diretorio do primeiro, chama o rename
         if (parentINode->header->id == newParentINode->header->id)
         {
-            return changeINodeEntryName(iNode, newEntryName);
+            if(changeINodeEntryName(iNode, newEntryName))
+            {
+                if(ufs->verbose == true)
+                {
+                    if(iNode->content.entryType == ARCHIVE)
+                    {
+                        printf(VERBOSE_RENAME_FILE, entryName, newEntryName);
+                    }
+                    else
+                    {
+                        printf(VERBOSE_RENAME_DIRECTORY, entryName, newEntryName);
+                    }
+                }
+
+                return true;
+            }
+            
+            return false;
         }
 
         // caso o segundo path nao exista e esteja num diretorio diferente do primeiro, ele eh movido e chama o rename
@@ -236,7 +314,26 @@ bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
         {
             if (addEntry(newEntryDirectory, iNode->header))
             {
-                return changeINodeEntryName(iNode, newEntryName);
+                if(changeINodeEntryName(iNode, newEntryName))
+                {
+                    if(ufs->verbose == true)
+                    {
+                        getPath(newPathString, newEntryPath, false);
+
+                        if(iNode->content.entryType == ARCHIVE)
+                        {
+                            printf(VERBOSE_MV_RENAME_FILE, entryName, newEntryName, pathString, newPathString);
+                        }
+                        else
+                        {
+                            printf(VERBOSE_MV_RENAME_DIRECTORY, entryName, newEntryName, pathString, newPathString);
+                        }
+                    }
+
+                    return true;
+                }
+                
+                return false;
             }
         }
 
@@ -258,7 +355,26 @@ bool moveEntry(UFS *ufs, Path *entryPath, Path *newEntryPath)
     {
         if (removeEntry(entryDirectory, entryName))
         {
-            return addEntry(&newINode->content.directory, iNode->header);
+            if(addEntry(&newINode->content.directory, iNode->header))
+            {
+                if(ufs->verbose == true)
+                {
+                    getPath(newPathString, newEntryPath, true);
+
+                    if(iNode->content.entryType == ARCHIVE)
+                    {
+                        printf(VERBOSE_MV_FILE, entryName, pathString, newPathString);
+                    }
+                    else
+                    {
+                        printf(VERBOSE_MV_DIRECTORY, entryName, pathString, newPathString);
+                    }
+                }
+
+                return true;
+            }
+            
+            return false;
         }
     }
     else
@@ -305,6 +421,11 @@ bool deleteEntryTraversal(UFS *ufs, long iNodeId)
 
 bool deleteEntry(UFS *ufs, Path *entryPath, bool isTraversalDeletion)
 {
+    char nameString[UCHAR_MAX];
+    char pathString[UCHAR_MAX];
+    strcpy(nameString, entryPath->entryNames[entryPath->size - 1]);
+    getPath(pathString, entryPath, false);
+    
     INode *parentINode = findParentINode(ufs, entryPath);
 
     if (!parentINode)
@@ -324,7 +445,17 @@ bool deleteEntry(UFS *ufs, Path *entryPath, bool isTraversalDeletion)
 
     if (ufs->iNodes[idFound]->content.entryType == ARCHIVE)
     {
-        return deleteSingleNode(ufs, parentINode, idFound, entryPath->entryNames[entryPath->size - 1]);
+        if(deleteSingleNode(ufs, parentINode, idFound, entryPath->entryNames[entryPath->size - 1]))
+        {
+            if(ufs->verbose == true)
+            {
+                printf(VERBOSE_RM, nameString, pathString);
+            }
+
+            return true;
+        }
+        
+        return false;
     }
 
     if (!isTraversalDeletion)
@@ -335,16 +466,30 @@ bool deleteEntry(UFS *ufs, Path *entryPath, bool isTraversalDeletion)
 
     if (entryPath->size == 1)
     {
-        return deleteEntryTraversal(ufs, idFound) && deleteSingleNode(ufs,
-                                                                      ufs->iNodes[ROOT_INODE],
-                                                                      idFound,
-                                                                      ufs->iNodes[idFound]->header->name);
+        if(deleteEntryTraversal(ufs, idFound) && deleteSingleNode(ufs, ufs->iNodes[ROOT_INODE], idFound, ufs->iNodes[idFound]->header->name))
+        {
+            if(ufs->verbose == true)
+            {
+                printf(VERBOSE_RM_R, nameString, pathString);
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
-    return deleteEntryTraversal(ufs, idFound) && deleteSingleNode(ufs,
-                                                                  parentINode,
-                                                                  idFound,
-                                                                  ufs->iNodes[idFound]->header->name);
+    if(deleteEntryTraversal(ufs, idFound) && deleteSingleNode(ufs, parentINode, idFound, ufs->iNodes[idFound]->header->name))
+    {
+        if(ufs->verbose == true)
+        {
+            printf(VERBOSE_RM_R, nameString, pathString);
+        }
+        
+        return true;
+    }
+
+    return false;
 }
 
 void displayEntry(UFS *ufs, Path *entryPath)

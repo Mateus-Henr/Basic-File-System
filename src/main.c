@@ -10,8 +10,32 @@
 
 int main()
 {
+    bool verbose = false;
+
+    while(true)
+    {
+        char input[UCHAR_MAX];
+
+        printf("Would you like to use verbose mode? (Y/n)?\n");
+
+        if(fgets(input, sizeof(input), stdin) != NULL)
+        {
+            if(input[0] == '\n')
+            {
+                continue;
+            }
+
+            if((input[0] == 'Y' || input[0] == 'y') && input[1] == '\n')
+            {
+                verbose = true;
+            }
+
+            break;
+        }
+    }
+
     UFS ufs;
-    initializeUFS(&ufs, MAX_INODES);
+    initializeUFS(&ufs, MAX_INODES, verbose);
 
     while(true)
     {

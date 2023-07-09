@@ -13,10 +13,13 @@ typedef struct UFS
     long maxINodes;
     long freeINodeCount;
     long iNodeCount;
+    bool verbose;
     Memory memory;
 } UFS;
 
-void initializeUFS(UFS *ufs, long maxINodes);
+void initializeUFS(UFS *ufs, long maxINodes, bool mode);
+
+void getPath(char *pathString, Path *path, bool last);
 
 bool createEntry(UFS *ufs, Path *entryPath, enum EntryType entryType);
 
