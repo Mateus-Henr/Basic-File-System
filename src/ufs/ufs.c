@@ -10,11 +10,10 @@
 #define DELIMITER "/"
 #define ROOT_INODE 0
 
-void initializeUFS(UFS *ufs, long maxINodes, bool mode)
+void initializeUFS(UFS *ufs, long maxINodes, bool mode, int blockSize)
 {
     ufs->maxINodes = maxINodes;
     ufs->iNodeCount = 1;
-    ufs->freeINodeCount = maxINodes - ufs->iNodeCount;
     ufs->verbose = mode;
     initializeMemory(&ufs->memory, maxINodes, 100);
 

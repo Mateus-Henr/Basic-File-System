@@ -11,13 +11,12 @@ typedef struct UFS
     INode **iNodes;
     LinkedListINode freeINodes;
     long maxINodes;
-    long freeINodeCount;
     long iNodeCount;
     bool verbose;
     Memory memory;
 } UFS;
 
-void initializeUFS(UFS *ufs, long maxINodes, bool mode);
+void initializeUFS(UFS *ufs, long maxINodes, bool mode, int blockSize);
 
 void getPath(char *pathString, Path *path, bool last);
 

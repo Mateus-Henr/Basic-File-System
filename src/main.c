@@ -8,6 +8,11 @@
 
 #define MAX_INODES 1000
 
+void clearInputBuffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) {}
+}
+
 int main()
 {
     bool verbose = false;
@@ -35,7 +40,11 @@ int main()
     }
 
     UFS ufs;
-    initializeUFS(&ufs, MAX_INODES, verbose);
+    int blockSize;
+    printf("What is the memory block size?\n");
+    scanf("%d", &blockSize);
+    clearInputBuffer();
+    initializeUFS(&ufs, MAX_INODES, verbose, blockSize);
 
     while(true)
     {
