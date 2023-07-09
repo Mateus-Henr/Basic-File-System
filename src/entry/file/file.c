@@ -13,12 +13,13 @@
 #define FILE2 "../files/shrek2.txt"
 #define FILE3 "../files/shrek3.txt"
 #define FILE4 "../files/marquin.txt"
+#define FILE5 "../files/pistonCup.txt"
 
 
 
 void initializeFile(File *file, Memory *memory)
 {
-    const char* files[] = {FILE_CONTENT, FILE1, FILE2, FILE3, FILE4};
+    const char* files[] = {FILE_CONTENT, FILE1, FILE2, FILE3, FILE4, FILE5};
     int numFiles = sizeof(files)/sizeof(files[0]);
     int randomIndex = rand()% numFiles;
     const char* randomFILE = files[randomIndex];
