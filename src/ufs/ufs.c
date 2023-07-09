@@ -61,7 +61,7 @@ INode *createSingleNode(UFS *ufs, char *entryName, enum EntryType entryType)
 
 bool deleteSingleNode(UFS *ufs, INode *parentINode, long iNodeId, char *entryName)
 {
-    insertNodeINode(ufs->freeINodes, iNodeId);
+    insertNodeINode(&ufs->freeINodes, iNodeId);
 
     bool status = removeEntry(&parentINode->content.directory, entryName);
 
