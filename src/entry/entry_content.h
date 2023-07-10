@@ -22,6 +22,4 @@ typedef struct EntryContent
 
 void initializeEntryContent(EntryContent *entryContent, enum EntryType entryType, Memory *memory);
 
-void displayEntryContent(EntryContent *entryContent);
-
 #endif //BASIC_FILE_SYSTEM_ENTRY_CONTENT_H

@@ -73,7 +73,7 @@ int main()
                         fileName[strcspn(fileName, "\n")] = '\0';
 
                         char filePath[UCHAR_MAX];
-                        snprintf(filePath, sizeof(filePath), "../files/%s", fileName);
+                        snprintf(filePath, sizeof(filePath), "files/%s", fileName);
 
                         FILE* file = fopen(filePath, "r");
             

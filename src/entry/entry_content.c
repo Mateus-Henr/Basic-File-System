@@ -14,15 +14,3 @@ void initializeEntryContent(EntryContent *entryContent, enum EntryType entryType
         initializeFile(&entryContent->file, memory);
     }
 }
-
-void displayEntryContent(EntryContent *entryContent)
-{
-    if (entryContent->entryType == DIRECTORY)
-    {
-        displayDirectory(&entryContent->directory);
-    }
-    else // File
-    {
-
-    }
-}

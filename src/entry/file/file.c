@@ -8,12 +8,12 @@
 
 #include "file.h"
 
-#define FILE_CONTENT "../files/content.txt"
-#define FILE1 "../files/shrek1.txt"
-#define FILE2 "../files/shrek2.txt"
-#define FILE3 "../files/shrek3.txt"
-#define FILE4 "../files/marquin.txt"
-#define FILE5 "../files/pistonCup.txt"
+#define FILE_CONTENT "files/content.txt"
+#define FILE1 "files/shrek1.txt"
+#define FILE2 "files/shrek2.txt"
+#define FILE3 "files/shrek3.txt"
+#define FILE4 "files/marquin.txt"
+#define FILE5 "files/pistonCup.txt"
 
 
 
